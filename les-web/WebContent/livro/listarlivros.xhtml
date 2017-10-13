@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<div class="row">
+			<div class="col-lg-12">
+				<h:form id="frmListarLivro">
+					<div class="col-lg-12">
+						<div style="margin-top: 50px;"></div>
+						<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4>Livros cadastrados</h4>
+							</div>
+							<div class="panel-body">
+								<p:dataTable var="livro" value="#{livroView.livros}">
+									<p:column headerText="titulo">
+										<h:outputText value="#{livro.titulo}" />
+									</p:column>
+									<p:column headerText="edicao">
+										<h:outputText value="#{livro.edicao}" />
+									</p:column>
+									<p:column headerText="autor">
+										<h:outputText value="#{livro.autor}" />
+									</p:column>
+									<p:column headerText="ano">
+										<h:outputText value="#{livro.ano}" />
+									</p:column>
+									<p:column headerText="editora">
+										<h:outputText value="#{livro.editora}" />
+									</p:column>
+									<p:column headerText="editar">
+										<h:commandButton action="#{livroView.editar(livro.id)}" data-livro="editar"
+											id="btnEditar" value="Visualizar" class="editar-#{livro.id}"/>
+									</p:column>
+									<p:column headerText="Inativar">
+										<h:commandButton action="#{livroView.inativar}" value="Inativar" />
+									</p:column>
+								</p:dataTable>
+							</div>
+						</div>
+					</div>
+				</h:form>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<h:form id="frmConsultarLivro">
+			<div class="row">
+				<div class="col-lg-12">
+					<h:outputText value="#{livroView.resultado.msg}"
+						styleClass="msg msg-info" />
+					<legend>Formulario</legend>
+					<fieldset>
+						<legend>Consultar Livros</legend>
+						<div class="col-lg-12"></div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<p:outputLabel>Titulo:</p:outputLabel>
+								<p:inputText value="#{livroView.livro.titulo}" id="txtTitulo"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Autor: </p:outputLabel>
+								<p:inputText value="#{livroView.livro.autor}"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Ano: </p:outputLabel>
+								<p:inputText value="#{livroView.livro.ano}"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Status:</p:outputLabel>
+								<h:selectOneMenu id="status" value="#{livroView.livro.status}"
+									styleClass="form-control">
+									<f:selectItem itemLabel="Nenhum" itemValue="0" />
+									<f:selectItem itemLabel="Ativo" itemValue="1" />
+									<f:selectItem itemLabel="Inativo" itemValue="2" />
+								</h:selectOneMenu>
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Editora:</p:outputLabel>
+								<p:inputText value="#{livroView.livro.editora}"
+									styleClass="form-control" />
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<p:outputLabel>Edição:</p:outputLabel>
+								<p:inputText value="#{livroView.livro.edicao}" id="txtEdicao"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>ISBN:</p:outputLabel>
+								<p:inputMask mask="99-999-9999-9"
+									value="#{livroView.livro.isbn}" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Numero de paginas:</p:outputLabel>
+								<p:inputMask value="#{livroView.livro.npaginas}"
+									styleClass="form-control" maxlength="4" />
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<h:commandButton action='#{livroView.processar("CONSULTAR")}' id="btnConsultar"
+								ajax="false" styleClass="btn btn-primary" value="CONSULTAR" />
+						</div>
+					</fieldset>
+				</div>
+			</div>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<div class="row">
+			<div class="col-lg-12">
+				<h:form id="frmCadastrar">
+					<div class="msg">
+						<p:messages id="resultMsg" showDetail="true" autoUpdate="true" closable="true"/>
+					</div>
+					<fieldset>
+						<legend>Cadastro de livro</legend>
+						<div class="col-lg-12"></div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<p:outputLabel>Titulo:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.titulo}" id="txtTitulo"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Autor: </p:outputLabel>
+								<p:inputText value="#{editarView.livro.autor}" required="true" id="txtAutor"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Ano: </p:outputLabel>
+								<p:inputText value="#{editarView.livro.ano}" required="true" id="txtAno"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Status:</p:outputLabel>
+								<h:selectOneMenu id="selStatus" value="#{editarView.livro.status}" 
+									styleClass="form-control">
+									<f:selectItem itemLabel="Ativo" itemValue="1" />
+									<f:selectItem itemLabel="Inativo" itemValue="2" />
+								</h:selectOneMenu>
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Editora:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.editora}" required="true" id="txtEditora"
+									styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Peso:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.dimensao.peso}" id="txtPeso"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Profundidade:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.dimensao.profundidade}" id="txtProfundidade"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Categorias: </p:outputLabel>
+								<h:selectManyListbox value="#{editarView.livro.categoria}" id="selCategoria"
+									styleClass="form-control">
+									<f:selectItems value="${editarView.categorias}" var="categoria"
+										itemValue="#{categoria.id}" itemLabel="#{categoria.nome}" />
+								</h:selectManyListbox>
+							</div>
+						</div>
+						<div class="col-lg-6">
+							<div class="form-group">
+								<p:outputLabel>Edição:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.edicao}" id="txtEdicao"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>ISBN:</p:outputLabel>
+								<p:inputMask mask="99-999-9999-9" required="true" id="txtISBN"
+									value="#{editarView.livro.isbn}" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Numero de paginas:</p:outputLabel>
+								<p:inputMask value="#{editarView.livro.npaginas}" required="true" id="txtNumPag"
+									styleClass="form-control" maxlength="4" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Altura:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.dimensao.altura}" id="txtAltura"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Largura:</p:outputLabel>
+								<p:inputText value="#{editarView.livro.dimensao.largura}" id="txtLargura"
+									required="true" styleClass="form-control" />
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Precificação</p:outputLabel>
+								<h:selectOneMenu value="#{editarView.livro.grupoPrecificacao.id}" id="selPrecificacao"
+									styleClass="form-control">
+									<f:selectItems value="#{editarView.gruposPrecificacao}"
+										var="precificacao" itemValue="#{precificacao.id}"
+										itemLabel="#{precificacao.descricao}" />
+								</h:selectOneMenu>
+							</div>
+							<div class="form-group">
+								<p:outputLabel>Sinopse:</p:outputLabel>
+								<p:inputTextarea maxlength="1000" required="true" id="txtSinopse"
+									value="#{editarView.livro.sinopse}" styleClass="form-control" />
+							</div>
+							<h:inputHidden value="#{editarView.livro.usuario.nomeusuario}" id="txtUsuario" />
+						</div>
+						<div class="col-lg-12">
+							<h:commandButton action='#{editarView.processar("ALTERAR")}' rendered="true" id="btnSalvar"
+								styleClass="btn btn-primary" value="ALTERAR" />
+						</div>
+					</fieldset>
+				</h:form>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

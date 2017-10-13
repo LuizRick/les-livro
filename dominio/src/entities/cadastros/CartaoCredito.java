@@ -1,0 +1,37 @@
+package entities.cadastros;
+
+import java.util.Date;
+
+public class CartaoCredito extends Cartao {
+
+	private String bandeira;
+
+	private String codigo;
+
+	private Date validade;
+
+	public String getBandeira() {
+		return bandeira;
+	}
+
+	public void setBandeira(String bandeira) {
+		this.bandeira = bandeira;
+	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo = codigo;
+	}
+
+	public Date getValidade() {
+		return validade;
+	}
+
+	public void setValidade(Date validade) {
+		this.validade = validade;
+	}
+
+}
