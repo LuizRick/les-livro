@@ -23,6 +23,8 @@ public class Endereco extends EntidadeDominio {
 	private String tipoResidencia;
 	
 	private String observacao;
+	
+	private Boolean preferencial;
 
 	public String getLogradouro() {
 		return logradouro;
@@ -102,6 +104,14 @@ public class Endereco extends EntidadeDominio {
 
 	public void setObservacao(String observacao) {
 		this.observacao = observacao;
+	}
+
+	public Boolean getPreferencial() {
+		return preferencial;
+	}
+
+	public void setPreferencial(Boolean preferencial) {
+		this.preferencial = preferencial;
 	}
 
 }

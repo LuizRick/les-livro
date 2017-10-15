@@ -41,7 +41,7 @@
 											id="btnEditar" value="Visualizar" class="editar-#{livro.id}"/>
 									</p:column>
 									<p:column headerText="Inativar">
-										<h:commandButton action="#{livroView.inativar}" value="Inativar" />
+										<h:commandButton action="#{livroView.configurar(livro.id)}" value="Configurar" />
 									</p:column>
 								</p:dataTable>
 							</div>

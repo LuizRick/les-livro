@@ -6,9 +6,12 @@ import java.sql.SQLException;
 import java.util.*;
 import core.dfs.aplicacao.*;
 import core.impl.dao.LivroDAO;
+import core.impl.dao.StatusVendaDAO;
+import core.impl.negocio.ValidarCamposConfiguracao;
 import core.impl.negocio.ValidarCamposObrigadoriosLivro;
 import dominio.EntidadeDominio;
 import entities.produto.Livro;
+import entities.produto.StatusVenda;
 import core.dfs.*;
 
 public class FachadaLivro implements IFachada {
@@ -23,17 +26,22 @@ public class FachadaLivro implements IFachada {
 		rns = new HashMap<String, Map<String, List<IStrategy>>>();
 		
 		LivroDAO livroDAO = new LivroDAO();
-		
+		StatusVendaDAO statusVendaDAO = new StatusVendaDAO();
 		daos.put(Livro.class.getName(), livroDAO);
+		daos.put(StatusVenda.class.getName(),statusVendaDAO);
 		
-		List<IStrategy> rnsSalvarLivro = new ArrayList<IStrategy>();
+		List<IStrategy> rnsSalvarLivro = new ArrayList<IStrategy>(),
+				rnsSalvarConf = new ArrayList<>();
 		rnsSalvarLivro.add(new ValidarCamposObrigadoriosLivro());
-		
-		Map<String, List<IStrategy>> rnsLivro = new HashMap<String, List<IStrategy>>();
+		rnsSalvarConf.add(new ValidarCamposConfiguracao());
+		Map<String, List<IStrategy>> rnsLivro = new HashMap<String, List<IStrategy>>(),
+				rnsConfLivro = new HashMap<>();
 		
 		rnsLivro.put("SALVAR", rnsSalvarLivro);	
+		rnsConfLivro.put("SALVAR", rnsSalvarConf);
 		
 		rns.put(Livro.class.getName(), rnsLivro);
+		rns.put(StatusVenda.class.getName(), rnsConfLivro);
 	}
 	
 	

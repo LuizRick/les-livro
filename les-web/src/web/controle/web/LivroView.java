@@ -189,7 +189,7 @@ public class LivroView implements Serializable {
 		FacesContext.getCurrentInstance().getExternalContext().redirect("cadastrar.xhtml");
 	}
 	
-	public void inativar() throws IOException{
-		FacesContext.getCurrentInstance().getExternalContext().redirect("inativar.xhtml");
+	public void configurar(String id) throws IOException{
+		FacesContext.getCurrentInstance().getExternalContext().redirect("configurar.xhtml?id=" + id);
 	}
 }

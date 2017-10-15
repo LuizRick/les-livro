@@ -33,6 +33,8 @@ public class Livro extends EntidadeDominio {
 	
 	private Usuario usuario;
 	
+	private StatusVenda statusLivro;
+	
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -135,5 +137,13 @@ public class Livro extends EntidadeDominio {
 
 	public void setDimensao(Dimensao dimensao) {
 		this.dimensao = dimensao;
+	}
+
+	public StatusVenda getStatusLivro() {
+		return statusLivro;
+	}
+
+	public void setStatusLivro(StatusVenda statusLivro) {
+		this.statusLivro = statusLivro;
 	}
 }

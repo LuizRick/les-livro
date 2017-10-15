@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile">
+
+<ui:composition template="/WEB-INF/templates/default.xhtml">
+	<ui:define name="content">
+		<div class="row">
+			<div class="col-lg-6">
+				<h:form id="frmInativacao">
+					<div class="msg">
+						<p:messages id="resultMsg" showDetail="true" autoUpdate="true"
+							closable="true" />
+					</div>
+					<fieldset>
+						<legend>Ativar/Inativar livro</legend>
+						<div class="form-group">
+							<label>Categoria de inativação/Ativar</label>
+							<h:selectOneMenu id="selInativacao" styleClass="form-control" value="#{configurarView.venda.categoria}">
+								<f:selectItem  itemLabel="Não fabricado" itemValue="1" />
+								<f:selectItem  itemLabel="Em desuso" itemValue="2"/>
+								<f:selectItem  itemLabel="Falta em estoque" itemValue="3"/>
+							</h:selectOneMenu>
+						</div>
+						<div class="form-group">
+							<label>Motivo de Inativação/Ativação</label>
+							<h:inputText value="#{configurarView.venda.motivo}" id="txtMotivoInativacao" styleClass="form-control" />
+						</div>
+						<div class="form-group">
+							<label>Status</label>
+							<h:selectOneMenu id="selStatusVenda" styleClass="form-control" value="#{configurarView.venda.status}">
+								<f:selectItem itemLabel="Inativo" itemValue="true"/>
+								<f:selectItem itemLabel="Ativo" itemValue="false"/>
+							</h:selectOneMenu>
+						</div>
+						<h:inputHidden value="#{configurarView.venda.idLivro}" id="hf_id" />
+						<h:commandButton value="#{configurarView.operacao}" styleClass="btn btn-primary" 
+						action="#{configurarView.processar}">
+							<f:param name="operacao" value="#{configurarView.operacao}"></f:param>
+						</h:commandButton>
+					</fieldset>
+				</h:form>
+			</div>
+			<div class="col-lg-6">
+				<fieldset>
+					<legend>Valor de Venda</legend>
+					<h:form id="frmConfVlrVenda">
+						<div class="form-group">
+							<label>Valor de Venda</label>
+							<h:inputText value="" id="txtVlrVenda" styleClass="form-control"/>
+						</div>
+						<h:commandButton value="ALTERARVALOR" styleClass="btn btn-primary"/>
+					</h:form>
+				</fieldset>
+			</div>
+		</div>
+	</ui:define>
+</ui:composition>
+</html>

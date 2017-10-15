@@ -1,17 +1,17 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <%@page import="core.util.ConvertDate"%>
 <%@page import="entities.cadastros.TipoTelefone"%>
 <%@page import="entities.cadastros.PessoaFisica"%>
 <%@page import="entities.cadastros.Cliente"%>
 <%@page import="core.dfs.aplicacao.Resultado"%>
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+<%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" ng-app="app"
       xmlns:c="http://java.sun.com/jsp/jstl/core">
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="UTF-8"/>
         <title>Insert title here</title>
     </head>
     <body>
@@ -41,6 +41,9 @@
                                 </li>
                                 <li>
                                     <a href="javascript:void(0)" ng-click="ctrl.setTab('tab2')">Telefones</a>
+                                </li>
+                                <li>
+                                	<a href="javascript:void(0)" ng-click="ctrl.setTab('tab3')">Endereços</a>
                                 </li>
                             </ul>
                         </div>
@@ -105,6 +108,13 @@
                             		
                             	</div>
                             </div>
+                        </div>
+                        <div class="col-lg-6" ng-class="{'visible' : ctrl.tab == 'tab3','tab-view':true}">
+                        	<div class="form-group">
+                        		<label>Logradouro</label>
+                        		<input type="text" name="txtLogradouro" class="form-control" 
+                        			value="${ }"/>
+                        	</div>
                         </div>
                     </div>
                     <div class="col-lg-6">

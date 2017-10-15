@@ -13,8 +13,10 @@
 		<h:form id="frmConsultarLivro">
 			<div class="row">
 				<div class="col-lg-12">
-					<h:outputText value="#{livroView.resultado.msg}"
-						styleClass="msg msg-info" />
+					<div class="msg">
+						<p:messages id="resultMsg" showDetail="true" autoUpdate="true"
+							closable="true" />
+					</div>
 					<legend>Formulario</legend>
 					<fieldset>
 						<legend>Consultar Livros</legend>

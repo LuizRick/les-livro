@@ -13,7 +13,10 @@ import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
 import core.util.ConvertDate;
 import dominio.EntidadeDominio;
+import entities.cadastros.Cartao;
+import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
+import entities.cadastros.Endereco;
 import entities.cadastros.PessoaFisica;
 import entities.cadastros.Telefone;
 import entities.produto.Livro;
@@ -60,6 +63,39 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.setInt(4, cliente.getId());
 				pst.executeUpdate();
 			}
+			for(int i=0;i < cliente.getEndereco().size();i++){
+				Endereco e = cliente.getEndereco().get(i);
+				pst = connection.prepareStatement(
+						"INSERT INTO endereco(logradouro, bairro, cep, numero, complemento, nome, tipo_residencia, "
+						+ "tipo_logradouro, cidade, estado, pais, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				pst.setString(1,e.getLogradouro());
+				pst.setString(2, e.getBairro());
+				pst.setString(3, e.getCep());
+				pst.setString(4, e.getNumero());
+				pst.setString(5, e.getComplemento());
+				pst.setString(6, e.getNome());
+				pst.setString(7, e.getTipoResidencia());
+				pst.setString(8, e.getTipoLogradouro());
+				pst.setString(9, e.getCidade().getNome());
+				pst.setString(10, e.getCidade().getEstado().getNome());
+				pst.setString(11, e.getCidade().getEstado().getPais().getNome());
+				pst.setInt(12, cliente.getId());
+				pst.executeUpdate();
+			}
+			
+			for(int i = 0;i <= cliente.getCartao().size();i++){
+				CartaoCredito card = (CartaoCredito) cliente.getCartao().get(i);
+				pst = connection.prepareStatement("INSERT INTO cartao_credito("+
+			            "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"+
+					    "VALUES (?, ?, ?, ?, ?, ?);");
+				pst.setString(1, card.getTitular());
+				pst.setString(2, card.getNumero());
+				pst.setString(3, card.getBandeira());
+				pst.setString(4, card.getCodigo());
+				pst.setString(5, card.getValidade().toString());
+				pst.setInt(6, cliente.getId());
+				pst.executeUpdate();
+			}
 			connection.commit();
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -75,7 +111,71 @@ public class ClienteDAO extends AbstractJdbcDAO {
 	@Override
 	public void alterar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
-		
+		openConnection();
+		PreparedStatement pst = null;
+		Cliente cliente = (Cliente) entidade;
+		try{
+			StringBuilder sql = new StringBuilder();
+			sql.append("UPDATE cliente SET  nome=?, nascimento=?, genero=?, cpf=?, email=?, senha=? WHERE id = ?;)");
+			pst = connection.prepareStatement(sql.toString());
+			pst.setString(1, cliente.getPessoa().getNome());
+			Date date = new Date(cliente.getPessoa().getNascimento().getTime());
+			pst.setDate(2, date);
+			pst.setString(3, cliente.getPessoa().getGenero() + "");
+			pst.setString(4, ((PessoaFisica)cliente.getPessoa()).getCpf());
+			pst.setString(5, cliente.getEmail());
+			pst.setString(6, cliente.getSenha());
+			pst.setInt(7, cliente.getId());
+			pst.executeUpdate();
+			pst = connection.prepareStatement(sql.toString());
+			for(int i = 0;i < cliente.getTelefone().size();i++){
+				Telefone t = cliente.getTelefone().get(i);
+				pst = connection.prepareStatement("UPDATE telefone SET  codigo_area=?, numero=?, tipo=? WHERE id_cliente= ?;");
+				pst.setString(1, t.getArea());
+				pst.setString(2, t.getNumero());
+				pst.setInt(3, t.getTipo().valorTipo);
+				pst.setInt(4, cliente.getId());
+				pst.executeUpdate();
+			}
+			for(int i=0;i < cliente.getEndereco().size();i++){
+				Endereco e = cliente.getEndereco().get(i);
+				pst = connection.prepareStatement(
+						"UPDATE endereco SET logradouro=?, bairro=?, cep=?, numero=?, complemento=?,"+ 
+						       "nome=?, tipo_residencia=?, tipo_logradouro=?, cidade=?, estado=?,"+ 
+						       "pais=?, id_cliente=? WHERE id = ?");
+				pst.setString(1,e.getLogradouro());
+				pst.setString(2, e.getBairro());
+				pst.setString(3, e.getCep());
+				pst.setString(4, e.getNumero());
+				pst.setString(5, e.getComplemento());
+				pst.setString(6, e.getNome());
+				pst.setString(7, e.getTipoResidencia());
+				pst.setString(8, e.getTipoLogradouro());
+				pst.setString(9, e.getCidade().getNome());
+				pst.setString(10, e.getCidade().getEstado().getNome());
+				pst.setString(11, e.getCidade().getEstado().getPais().getNome());
+				pst.setInt(12, cliente.getId());
+				pst.setInt(13, e.getId());
+				pst.executeUpdate();
+			}
+			
+			for(int i = 0;i <= cliente.getCartao().size();i++){
+				CartaoCredito card = (CartaoCredito) cliente.getCartao().get(i);
+				pst = connection.prepareStatement("UPDATE cartao_credito SET titular=?, numero=?, "
+						+ "bandeira=?, codigo_seguranca=?, validade=?, id_cliente=? WHERE id=?;");
+				pst.setString(1, card.getTitular());
+				pst.setString(2, card.getNumero());
+				pst.setString(3, card.getBandeira());
+				pst.setString(4, card.getCodigo());
+				pst.setString(5, card.getValidade().toString());
+				pst.setInt(6, cliente.getId());
+				pst.setInt(7, card.getId());
+				pst.executeUpdate();
+			}
+			connection.commit();
+		}catch(SQLException ex){
+			ex.printStackTrace();
+		}
 	}
 
 	@Override
