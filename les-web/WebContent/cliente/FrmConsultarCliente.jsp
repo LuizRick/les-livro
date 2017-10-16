@@ -103,7 +103,7 @@
                         </div>
                     </div>
                     <div class="col-lg-6">
-                        <input type="submit" name="operacao" class"btn
+                        <input type="submit" name="operacao" class="btn
                                btn-primary" value="CONSULTAR" />
                 </div>
             </form>

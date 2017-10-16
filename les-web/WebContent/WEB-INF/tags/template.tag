@@ -17,7 +17,7 @@
         <meta charset="utf-8"/>
     </head>
     <body>
-        <div class="navbar navbar-default">
+        <div class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed"

@@ -50,7 +50,9 @@ $("#resetar").on('click',function(){
   var app = angular.module("app",[]);
   app.controller('FormClienteController',['$scope', function($scope){
         this.tab = "tab1";
-        this.telefones = [1];        
+        this.telefones = [1];
+        this.cartoes = [1];
+        this.enderecos = [1];
         this.setTab = (tab) => {
         	this.tab = tab;
         }
@@ -59,12 +61,35 @@ $("#resetar").on('click',function(){
         	this.telefones.push(this.telefones.length + 1);
         };
         
+        this.addCartao = () => {
+        	this.cartoes.push(this.cartoes.length + 1);
+        }
+        
+        this.removeCartao = () => {
+        	if(this.cartoes.length > 1)
+        		this.cartoes.pop();
+        	else
+        		alert("E necessario ao menos um cartão");
+        }
+        
         this.removeTelefone = (key) =>{
         	if(this.telefones.length > 1)
         		this.telefones.pop();
         	else
         		alert("E necessario ao menos um telefone(voce nao pode remover)");
         }
+        
+        this.addEndereco  = () => {
+        	this.enderecos.push(this.enderecos.length + 1);
+        }
+        
+        this.removeEndereco = () => {
+        	if(this.enderecos.length > 1)
+        		this.enderecos.pop();
+        	else
+        		alert("E necessario ao menos um endereco");
+        }
+        
         this.valueOperacao = function(){
         	if(getParameterByName('id') == 0){
         		return "SALVAR";

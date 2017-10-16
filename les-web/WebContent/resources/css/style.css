@@ -2,7 +2,12 @@
 .container{
     width:900px;
     margin:0 auto;
-    background: #fff;
+    background: #000;
+    font-size:12px !important;
 }
 .tab-view{display: none;}
 .visible{display: block;}
+
+body{
+	background:#eff0f5 !important;
+}
