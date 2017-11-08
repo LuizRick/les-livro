@@ -1,9 +1,10 @@
 package entities.cadastros;
 
-import dominio.EntidadeDominio;
+import entities.usuarios.Usuario;
+
 import java.util.List;
 
-public class Cliente extends EntidadeDominio {
+public class Cliente extends Usuario {
 
 	private String email;
 

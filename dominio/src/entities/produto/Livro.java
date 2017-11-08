@@ -5,7 +5,7 @@ import entities.usuarios.Usuario;
 
 import java.util.List;
 
-public class Livro extends EntidadeDominio {
+public class Livro extends EntidadeDominio implements IProduto{
 
 	private String autor;
 

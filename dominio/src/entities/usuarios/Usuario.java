@@ -1,8 +1,6 @@
 package entities.usuarios;
 
-import dominio.EntidadeDominio;
-
-public class Usuario extends EntidadeDominio {
+public class Usuario extends Pessoa {
 	
 	private String nomeusuario;
 	private String senha;
