@@ -7,17 +7,45 @@
 	xmlns:pm="http://primefaces.org/mobile">
 <h:head>
 	<title>Login</title>
+	<h:outputStylesheet library="css" name="bootstrap.css" />
 </h:head>
 <h:body>
-	<h:form id="frmLogin">
-		<pm:field>
-			<p:outputLabel for="txtUserName">Usuario: </p:outputLabel>
-			<p:inputText value="#{usuario.nome}" id="txtUserName" />
-		</pm:field>
-		<pm:field>
-			<p:commandButton action="#{usuario.loginUser}" value="Login" rendered="true" id="btnLogin"/>
-		</pm:field>
-		<p:message for="txtUserName"/>
-	</h:form>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-6 col-sm-6">
+				<fieldset>
+					<legend>Login ADM:</legend>
+					<h:form id="frmLogin">
+						<pm:field>
+							<p:outputLabel for="txtUserName">Usuario: </p:outputLabel>
+							<p:inputText value="#{usuario.nome}" id="txtUserName" />
+						</pm:field>
+						<pm:field>
+							<p:commandButton action="#{usuario.loginUser}" value="Login"
+								rendered="true" id="btnLogin" />
+						</pm:field>
+						<p:message for="txtUserName" />
+					</h:form>
+				</fieldset>
+			</div>
+			<div class="col-lg-6 col-sm-6">
+				<fieldset>
+					<legend>Login CLiente</legend>
+					<form action="loginCliente" method="post">
+						<div class="form-group">
+							<label>Email:</label> <input type="text" name="email" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<label>Senha:</label> <input type="password" name="senha" class="form-control"/>
+						</div>
+						<div class="form-group">
+							<a href="cliente/frmCadastrar.jsp">Cadastar</a>
+						</div>
+						<input type="submit" class="btn btn-primary" name="operacao" value="LOGAR" />
+					</form>
+				</fieldset>
+			</div>
+		</div>
+	</div>
 </h:body>
 </html>

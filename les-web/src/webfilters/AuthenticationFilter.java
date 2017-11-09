@@ -44,7 +44,8 @@ public class AuthenticationFilter implements Filter {
 			HttpSession ses = reqt.getSession(false);
 			String reqUri = reqt.getRequestURI();
 			
-			if(reqUri.indexOf("/login.xhtml") >= 0 || (ses != null && ses.getAttribute("username") != null)
+			if(reqUri.indexOf("/login.xhtml") >= 0 || reqUri.indexOf("/cliente/frmCadastrar.jsp") >=0 || 
+					(ses != null && (ses.getAttribute("username") != null || ses.getAttribute("cliente") != null))
 					|| reqUri.indexOf("/public/") >= 0 || reqUri.contains("javax.faces.resource"))
 				chain.doFilter(request, response);
 			else

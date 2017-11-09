@@ -1,8 +1,9 @@
 package entities.cadastros;
 
 import dominio.EntidadeDominio;
+import entities.venda.IFormaPagamento;
 
-public class Cartao extends EntidadeDominio {
+public class Cartao extends EntidadeDominio implements IFormaPagamento {
 
 	private String numero;
 	

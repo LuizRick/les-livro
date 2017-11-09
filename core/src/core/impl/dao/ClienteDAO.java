@@ -198,17 +198,19 @@ public class ClienteDAO extends AbstractJdbcDAO {
 			sb.append(" and a.cpf ilike '%" + ((PessoaFisica)cliente.getPessoa()).getCpf() + "%'");
 		}
 		if(cliente.getEmail() != null && !cliente.getEmail().equals("")){
-			sb.append(" and a.email ilike '%" + cliente.getEmail() + "%'");
+			sb.append(" and a.email = '" + cliente.getEmail() + "'");
 		}
 		if(cliente.getSenha() != null && !cliente.getSenha().equals("")){
-			sb.append(" and a.senha = '%" + cliente.getSenha() + "%'");
+			sb.append(" and a.senha = '" + cliente.getSenha() + "'");
 		}
 		if(cliente.getPessoa() != null && cliente.getPessoa().getNascimento() != null){
 			sb.append(" and a.nascimento = '" + cliente.getPessoa().getNascimento() + "'");
 		}
-		if(Character.isAlphabetic(cliente.getPessoa().getGenero())){
+		
+		/*if(cliente.getPessoa() != null  && Character.isAlphabetic(cliente.getPessoa().getGenero())){
 			sb.append(" and a.genero = " + cliente.getPessoa().getGenero());
-		}
+		}*/
+		
 		if(cliente.getTelefone() != null && cliente.getTelefone().get(0).getNumero() != null){
 			sb.append( "and b.numero ilike '%" + cliente.getTelefone().get(0).getNumero() + "%'");
 		}

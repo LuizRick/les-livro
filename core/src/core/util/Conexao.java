@@ -9,9 +9,9 @@ public class Conexao {
 	public static Connection getConnection() throws ClassNotFoundException,
 	SQLException{
 		String driver = "org.postgresql.Driver";
-		String url = "jdbc:postgresql://localhost:5432/ecommerce";
+		String url = "jdbc:postgresql://localhost:5433/ecommerce";
 		String user = "postgres";
-		String password = "postgres";
+		String password = "123456";
 		Class.forName( driver );
 		Connection conn = 
 				DriverManager.getConnection(url, user, password);

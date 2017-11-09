@@ -2,8 +2,6 @@ package entities.venda;
 
 import java.util.List;
 
-import entities.produto.IProduto;
-
 public class CarrinhoCompra {
 	
 	private List<Item> itens;
@@ -15,6 +13,4 @@ public class CarrinhoCompra {
 	public void setItens(List<Item> itens) {
 		this.itens = itens;
 	}
-	
-	
 }
