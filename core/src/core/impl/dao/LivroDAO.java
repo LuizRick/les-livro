@@ -114,34 +114,40 @@ public class LivroDAO extends AbstractJdbcDAO {
 		List<Categoria> categorias = new ArrayList<>();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT  a.id, a.autor, a.ano, a.titulo, a.editora, a.edicao, a.isbn, a.npaginas, a.sinopse, a.status, a.altura,");
-	    sql.append(" a.largura, a.peso, a.profundidade, a.id_grupo_precificacao FROM livro a ");
-		sql.append(" WHERE 1=1 ");
-		if(livro.getTitulo() != null && livro.getTitulo().length() > 0){
-			sql.append(" AND a.titulo ilike '%" + livro.getTitulo() + "%'");
-		}
-		if(livro.getAutor() != null && livro.getAutor().length() > 0){
-			sql.append(" AND a.autor ilike '%" + livro.getTitulo() + "%'");
-		}
-		if(livro.getEdicao() != null && livro.getEdicao().length() > 0){
-			sql.append(" AND a.edicao ilike '%" + livro.getEdicao() + "%'");
-		}
-		if(livro.getIsbn() != null && livro.getIsbn().length() > 0){
-			sql.append(" AND a.isbn ilike '%" + livro.getIsbn() + "%'");
-		}
-		if(livro.getAno() != null && livro.getAno().length() > 0){
-			sql.append(" and a.ano ilike '%" + livro.getAno() + "%'");
-		}
-		if(livro.getNpaginas() != null && livro.getNpaginas().length() > 0){
-			sql.append(" and a.npaginas = " + livro.getNpaginas());
-		}
-		if(livro.getStatus() > 0){
-			sql.append(" and a.status = " + livro.getStatus());
-		}
-		if(livro.getEditora() != null && livro.getEditora().length() > 0){
-			sql.append(" and a.editora ilike '%" + livro.getEditora() + "%'");
-		}
-		if(livro.getGrupoPrecificacao().getId() != null){
-			sql.append(" and a.id_grupo_precificacao = " + livro.getGrupoPrecificacao().getId());
+	    sql.append(" a.largura, a.peso, a.profundidade, a.id_grupo_precificacao,a.valor FROM livro a ");
+		if(livro != null) {
+			sql.append(" WHERE 1=1 ");
+			if(livro.getId() != null && livro.getId() > 0){
+				sql.append(" AND a.id = " + livro.getId());
+			}
+			
+			if(livro.getTitulo() != null && livro.getTitulo().length() > 0){
+				sql.append(" AND a.titulo ilike '%" + livro.getTitulo() + "%'");
+			}
+			if(livro.getAutor() != null && livro.getAutor().length() > 0){
+				sql.append(" AND a.autor ilike '%" + livro.getTitulo() + "%'");
+			}
+			if(livro.getEdicao() != null && livro.getEdicao().length() > 0){
+				sql.append(" AND a.edicao ilike '%" + livro.getEdicao() + "%'");
+			}
+			if(livro.getIsbn() != null && livro.getIsbn().length() > 0){
+				sql.append(" AND a.isbn ilike '%" + livro.getIsbn() + "%'");
+			}
+			if(livro.getAno() != null && livro.getAno().length() > 0){
+				sql.append(" and a.ano ilike '%" + livro.getAno() + "%'");
+			}
+			if(livro.getNpaginas() != null && livro.getNpaginas().length() > 0){
+				sql.append(" and a.npaginas = " + livro.getNpaginas());
+			}
+			if(livro.getStatus() > 0){
+				sql.append(" and a.status = " + livro.getStatus());
+			}
+			if(livro.getEditora() != null && livro.getEditora().length() > 0){
+				sql.append(" and a.editora ilike '%" + livro.getEditora() + "%'");
+			}
+			if(livro.getGrupoPrecificacao() != null && livro.getGrupoPrecificacao().getId() != null){
+				sql.append(" and a.id_grupo_precificacao = " + livro.getGrupoPrecificacao().getId());
+			}
 		}
 		try{
 			openConnection();
@@ -168,6 +174,7 @@ public class LivroDAO extends AbstractJdbcDAO {
 				l.getDimensao().setProfundidade(rs.getDouble("profundidade"));
 				l.setSinopse(rs.getString("sinopse"));
 				l.setCategoria(categorias);
+				l.setValor(rs.getDouble("valor"));
 				pst = connection.prepareStatement("SELECT b.id,b.nome FROM livro_categorias a "
 						+ "JOIN categoria b on (a.id_livro = ? and b.id = a.id_categoria)");
 				pst.setInt(1, l.getId());

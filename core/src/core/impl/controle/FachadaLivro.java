@@ -5,6 +5,7 @@ import core.dfs.IFachada;
 import java.sql.SQLException;
 import java.util.*;
 import core.dfs.aplicacao.*;
+import core.impl.dao.ConfiguracaoVendaDAO;
 import core.impl.dao.LivroDAO;
 import core.impl.dao.StatusVendaDAO;
 import core.impl.negocio.ValidarCamposConfiguracao;
@@ -12,6 +13,7 @@ import core.impl.negocio.ValidarCamposObrigadoriosLivro;
 import dominio.EntidadeDominio;
 import entities.produto.Livro;
 import entities.produto.StatusVenda;
+import entities.venda.Venda;
 import core.dfs.*;
 
 public class FachadaLivro implements IFachada {
@@ -27,8 +29,10 @@ public class FachadaLivro implements IFachada {
 		
 		LivroDAO livroDAO = new LivroDAO();
 		StatusVendaDAO statusVendaDAO = new StatusVendaDAO();
+		ConfiguracaoVendaDAO configuracaoVendaDAO = new ConfiguracaoVendaDAO();
 		daos.put(Livro.class.getName(), livroDAO);
 		daos.put(StatusVenda.class.getName(),statusVendaDAO);
+		daos.put(Venda.class.getName(), configuracaoVendaDAO);
 		
 		List<IStrategy> rnsSalvarLivro = new ArrayList<IStrategy>(),
 				rnsSalvarConf = new ArrayList<>();

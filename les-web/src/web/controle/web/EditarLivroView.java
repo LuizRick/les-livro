@@ -11,6 +11,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import core.dfs.aplicacao.Resultado;
@@ -28,7 +29,7 @@ import web.controle.web.command.impl.AlterarCommand;
 
 
 @ManagedBean(name="editarView")
-@ViewScoped
+@SessionScoped
 public class EditarLivroView implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

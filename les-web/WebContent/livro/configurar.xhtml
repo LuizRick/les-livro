@@ -21,26 +21,29 @@
 						<legend>Ativar/Inativar livro</legend>
 						<div class="form-group">
 							<label>Categoria de inativação/Ativar</label>
-							<h:selectOneMenu id="selInativacao" styleClass="form-control" value="#{configurarView.venda.categoria}">
-								<f:selectItem  itemLabel="Não fabricado" itemValue="1" />
-								<f:selectItem  itemLabel="Em desuso" itemValue="2"/>
-								<f:selectItem  itemLabel="Falta em estoque" itemValue="3"/>
+							<h:selectOneMenu id="selInativacao" styleClass="form-control"
+								value="#{configurarView.venda.statusVenda.categoria}">
+								<f:selectItem itemLabel="Não fabricado" itemValue="1" />
+								<f:selectItem itemLabel="Em desuso" itemValue="2" />
+								<f:selectItem itemLabel="Falta em estoque" itemValue="3" />
 							</h:selectOneMenu>
 						</div>
 						<div class="form-group">
 							<label>Motivo de Inativação/Ativação</label>
-							<h:inputText value="#{configurarView.venda.motivo}" id="txtMotivoInativacao" styleClass="form-control" />
+							<h:inputText value="#{configurarView.venda.statusVenda.motivo}"
+								id="txtMotivoInativacao" styleClass="form-control" />
 						</div>
 						<div class="form-group">
 							<label>Status</label>
-							<h:selectOneMenu id="selStatusVenda" styleClass="form-control" value="#{configurarView.venda.status}">
-								<f:selectItem itemLabel="Inativo" itemValue="true"/>
-								<f:selectItem itemLabel="Ativo" itemValue="false"/>
+							<h:selectOneMenu id="selStatusVenda" styleClass="form-control"
+								value="#{configurarView.venda.statusVenda.status}">
+								<f:selectItem itemLabel="Inativo" itemValue="true" />
+								<f:selectItem itemLabel="Ativo" itemValue="false" />
 							</h:selectOneMenu>
 						</div>
-						<h:inputHidden value="#{configurarView.venda.idLivro}" id="hf_id" />
-						<h:commandButton value="#{configurarView.operacao}" styleClass="btn btn-primary" 
-						action="#{configurarView.processar}">
+						<h:inputHidden value="#{configurarView.venda.id}" id="hf_id" />
+						<h:commandButton value="#{configurarView.operacao}"
+							styleClass="btn btn-primary" action="#{configurarView.processar}">
 							<f:param name="operacao" value="#{configurarView.operacao}"></f:param>
 						</h:commandButton>
 					</fieldset>
@@ -52,9 +55,13 @@
 					<h:form id="frmConfVlrVenda">
 						<div class="form-group">
 							<label>Valor de Venda</label>
-							<h:inputText value="" id="txtVlrVenda" styleClass="form-control"/>
+							<h:inputText value="#{configurarView.venda.valor}"
+								id="txtVlrVenda" styleClass="form-control" />
 						</div>
-						<h:commandButton value="ALTERARVALOR" styleClass="btn btn-primary"/>
+						<h:commandButton value="ALTERARVALOR" styleClass="btn btn-primary"
+							action="#{configurarView.processar()}">
+							<f:param name="operacao" value="ALTERARVALOR" />
+						</h:commandButton>
 					</h:form>
 				</fieldset>
 			</div>

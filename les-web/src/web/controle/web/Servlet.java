@@ -44,7 +44,6 @@ public class Servlet extends HttpServlet {
         vhs = new HashMap<String, IViewHelper>();
         vhs.put("/les-web/cliente/SalvarCliente",new ClienteViewHelper());
         vhs.put("/les-web/cliente/ConsultarCliente", new ConsultarClienteViewHelper());
-        
     }
 
 	/**

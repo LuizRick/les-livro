@@ -48,6 +48,8 @@ public class AuthenticationFilter implements Filter {
 					(ses != null && (ses.getAttribute("username") != null || ses.getAttribute("cliente") != null))
 					|| reqUri.indexOf("/public/") >= 0 || reqUri.contains("javax.faces.resource"))
 				chain.doFilter(request, response);
+			else if(ses != null && (ses.getAttribute("username") == null || ses.getAttribute("cliente") == null))
+				resp.sendRedirect(reqt.getContextPath() + "/public/index");
 			else
 				resp.sendRedirect(reqt.getContextPath() + "/login.xhtml");
 		}catch(Exception e){

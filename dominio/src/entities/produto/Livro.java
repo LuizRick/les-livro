@@ -35,6 +35,8 @@ public class Livro extends EntidadeDominio implements IProduto{
 	
 	private StatusVenda statusLivro;
 	
+	private Double Valor;
+	
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -145,5 +147,13 @@ public class Livro extends EntidadeDominio implements IProduto{
 
 	public void setStatusLivro(StatusVenda statusLivro) {
 		this.statusLivro = statusLivro;
+	}
+
+	public Double getValor() {
+		return Valor;
+	}
+
+	public void setValor(Double valor) {
+		Valor = valor;
 	}
 }

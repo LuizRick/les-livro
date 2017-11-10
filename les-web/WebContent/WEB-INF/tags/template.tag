@@ -33,6 +33,7 @@
                     <ul class="nav navbar-nav">
 						<li><a href="/les-web/cliente/FrmConsultarCliente.jsp">Consultar</a>
 						<li><a href="/les-web/cliente/frmCadastrar.jsp">Cadastrar</a>
+						<li><a href="/les-web/public/index">Produtos</a></li>
                     </ul>
                 </div>
             </div>

@@ -119,7 +119,7 @@
                             <div ng-repeat="endereco in ctrl.enderecos">
                                 <div class="form-group">
                                     <label>Logradouro</label>
-                                    <input type="text" name="txtLogradouros" value="${endereco.logradouro}" class="form-control"/>
+                                    <input type="text" name="txtLogradouro" value="${endereco.logradouro}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Bairro</label>
@@ -127,27 +127,27 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Cep</label>
-                                    <input type="text" name="txtCeps" value="${endereco.cep}" class="form-control"/>
+                                    <input type="text" name="txtCep" value="${endereco.cep}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Numero</label>
-                                    <input type="text" name="txtNumeros" value="${endereco.numero}" class="form-control"/>
+                                    <input type="text" name="txtNumero" value="${endereco.numero}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Complemento</label>
-                                    <input type="text" name="txtComplementos" value="${endereco.complemento}" class="form-control"/>
+                                    <input type="text" name="txtComplemento" value="${endereco.complemento}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Nome</label>
-                                    <input type="text" name="txtNomes" value="${endereco.nome}" class="form-control"/>
+                                    <input type="text" name="txtNomesRes" value="${endereco.nome}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Tipo Residencia</label>
-                                    <input type="text" name="txtLogradouros" value="${endereco.logradouro}" class="form-control"/>
+                                    <input type="text" name="txtTipoRes" value="${endereco.logradouro}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Tipo de Logradouro</label>
-                                    <input type="text" name="txtLogradouros" value="${endereco.logradouro}" class="form-control"/>
+                                    <input type="text" name="txtTipoLog" value="${endereco.logradouro}" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Cidade</label>
@@ -181,23 +181,23 @@
                                 <h4>Cartão - {{cartao}}</h4>
                                 <div class="form-group">
                                     <label>Titular</label>
-                                    <input type="text" name="txtTitulares" class="form-control" />
+                                    <input type="text" name="txtTitulares" class="form-control" required/>
                                 </div>
                                 <div class="form-group">
                                     <label>Numero</label>
-                                    <input type="text" name="txtTitulares" class="form-control"/>
+                                    <input type="text" name="txtCardNum" class="form-control"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Baindeira</label>
-                                    <input type="text" name="txtTitulares" class="form-control" />
+                                    <input type="text" name="txtCardBand" class="form-control" />
                                 </div>
                                 <div class="form-group">
                                     <label>Codigo de segurança</label>
-                                    <input type="text" name="txtCodigoSeguraca" class="form-control" />
+                                    <input type="text" name="txtCardCod" class="form-control" maxlength="3"/>
                                 </div>
                                 <div class="form-group">
                                     <label>Validade</label>
-                                    <input type="text" name="txtValidade" class="form-control"
+                                    <input type="text" name="txtCardVal" class="form-control"
                                            data-mask="99/99/9999"/>
                                 </div>
                             </div>

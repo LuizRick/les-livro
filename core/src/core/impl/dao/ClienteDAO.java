@@ -83,7 +83,7 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.executeUpdate();
 			}
 			
-			for(int i = 0;i <= cliente.getCartao().size();i++){
+			for(int i = 0;i < cliente.getCartao().size();i++){
 				CartaoCredito card = (CartaoCredito) cliente.getCartao().get(i);
 				pst = connection.prepareStatement("INSERT INTO cartao_credito("+
 			            "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"+
@@ -92,12 +92,13 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.setString(2, card.getNumero());
 				pst.setString(3, card.getBandeira());
 				pst.setString(4, card.getCodigo());
-				pst.setString(5, card.getValidade().toString());
+				pst.setDate(5, new java.sql.Date( card.getValidade().getTime()));
 				pst.setInt(6, cliente.getId());
 				pst.executeUpdate();
 			}
 			connection.commit();
 		}catch(SQLException e){
+			connection.rollback();
 			e.printStackTrace();
 		}finally{
 			try{
