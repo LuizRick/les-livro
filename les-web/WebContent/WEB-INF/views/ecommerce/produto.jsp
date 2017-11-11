@@ -39,7 +39,7 @@
 										<c:out value="${livro.sinopse }"></c:out>
 									</p>
 									<div>
-										<button class="btn btn-primary">Comprar</button>
+										<button class="btn btn-success">Comprar</button>
 									</div>
 								</div>
 							</div>

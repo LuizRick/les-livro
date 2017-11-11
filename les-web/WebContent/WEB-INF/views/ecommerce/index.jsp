@@ -15,23 +15,31 @@
 		<jsp:body>
 		<div class="row">
 			<c:forEach var="livro" items="${livros}">
-					<div class='col-lg-3'>
-						<div class='thumbnail'>
-							<img src="img/img.jpg" alt="livro" />
-							<div class="caption">
-								<h3>${livro.getTitulo()}</h3>
-								<p style="height: 50px">
-									${livro.sinopse }
-								</p>
-								<p>
-									<b>R$:<c:out value="${livro.valor }"></c:out></b>
-								</p>
-								<p>
-									<a href="produto?id=${livro.id}" class="btn btn-primary">VISUALIZAR</a>
-								</p>
+					<form action="additem" method="post">
+						<div class='col-lg-3'>
+							<div class='thumbnail'>
+								<img src="img/img.jpg" alt="livro" />
+								<div class="caption">
+									<h3>${livro.getTitulo()}</h3>
+									<p style="height: 50px">
+										${livro.sinopse }
+									</p>
+									<p>
+										<b>R$:<c:out value="${livro.valor }"></c:out></b>
+									</p>
+									<p><b>Estoque:&nbsp;<c:out value="${livro.estoque }"></c:out></b></p>
+									<div class="form-group">
+										<label>Quantidade:</label>
+										<input type="number" name="quantidade" class="form-control" value="1"/>
+									</div>
+									<input type="hidden" name="id" value="${livro.id }"/>
+									<p>
+										<button type="submit" class="btn btn-primary visualizar">Adicionar</button>
+									</p>
+								</div>
 							</div>
 						</div>
-					</div>
+					</form>
 			</c:forEach>
 			</div>
         </jsp:body>

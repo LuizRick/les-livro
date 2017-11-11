@@ -37,6 +37,8 @@ public class Livro extends EntidadeDominio implements IProduto{
 	
 	private Double Valor;
 	
+	private Integer estoque;
+	
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -155,5 +157,13 @@ public class Livro extends EntidadeDominio implements IProduto{
 
 	public void setValor(Double valor) {
 		Valor = valor;
+	}
+
+	public Integer getEstoque() {
+		return estoque;
+	}
+
+	public void setEstoque(Integer estoque) {
+		this.estoque = estoque;
 	}
 }

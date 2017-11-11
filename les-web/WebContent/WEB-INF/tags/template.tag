@@ -6,7 +6,7 @@
 <%@attribute name="scriptPrepend" fragment="true" %>
 <%@attribute name="linkAppend" fragment="true" %>
 <%@attribute name="linkPrepend" fragment="true" %>
-<html ng-app="app">
+<html ng-app="app" xmlns:c="http://java.sun.com/jsp/jstl/core">
     <head>
         <jsp:invoke fragment="linkPrepend"/>
         <link rel="stylesheet"
@@ -26,14 +26,22 @@
                             class="icon-bar"></span> <span class="icon-bar"></span> <span
                             class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="/les-web/">Home</a>
+                    <a class="navbar-brand" href="/les-web/login.xhtml">Home</a>
                 </div>
                 <div class="collapse navbar-collapse" id="menu">
-
                     <ul class="nav navbar-nav">
 						<li><a href="/les-web/cliente/FrmConsultarCliente.jsp">Consultar</a>
 						<li><a href="/les-web/cliente/frmCadastrar.jsp">Cadastrar</a>
 						<li><a href="/les-web/public/index">Produtos</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                    	<li>
+                    		<a href="/les-web/public/verifyCart">
+                    			Carrinho <span class="badge">
+                    				${empty carrinho ? 0 : carrinho.itens.size() }
+                    			</span>
+                    		</a>
+                    	</li>
                     </ul>
                 </div>
             </div>

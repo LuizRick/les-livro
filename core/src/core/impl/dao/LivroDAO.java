@@ -114,7 +114,7 @@ public class LivroDAO extends AbstractJdbcDAO {
 		List<Categoria> categorias = new ArrayList<>();
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT DISTINCT  a.id, a.autor, a.ano, a.titulo, a.editora, a.edicao, a.isbn, a.npaginas, a.sinopse, a.status, a.altura,");
-	    sql.append(" a.largura, a.peso, a.profundidade, a.id_grupo_precificacao,a.valor FROM livro a ");
+	    sql.append(" a.largura, a.peso, a.profundidade, a.id_grupo_precificacao,a.valor,a.estoque FROM livro a ");
 		if(livro != null) {
 			sql.append(" WHERE 1=1 ");
 			if(livro.getId() != null && livro.getId() > 0){
@@ -175,6 +175,7 @@ public class LivroDAO extends AbstractJdbcDAO {
 				l.setSinopse(rs.getString("sinopse"));
 				l.setCategoria(categorias);
 				l.setValor(rs.getDouble("valor"));
+				l.setEstoque(rs.getInt("estoque"));
 				pst = connection.prepareStatement("SELECT b.id,b.nome FROM livro_categorias a "
 						+ "JOIN categoria b on (a.id_livro = ? and b.id = a.id_categoria)");
 				pst.setInt(1, l.getId());
