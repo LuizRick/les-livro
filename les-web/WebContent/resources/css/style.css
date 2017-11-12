@@ -15,3 +15,11 @@ body{
 footer{
 	padding:12px 0 12px 0;
 }
+
+.relative{
+	position: relative;
+}
+
+.remover:hover{
+	cursor:pointer;
+}

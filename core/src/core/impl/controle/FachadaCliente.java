@@ -10,11 +10,14 @@ import core.dfs.IDAO;
 import core.dfs.IFachada;
 import core.dfs.IStrategy;
 import core.dfs.aplicacao.Resultado;
+import core.impl.dao.CartaoCreditoDAO;
 import core.impl.dao.ClienteDAO;
+import core.impl.negocio.ValidarCamposCartaoCredito;
 import core.impl.negocio.ValidarCamposObrigadoriosLivro;
 import dominio.EntidadeDominio;
+import entities.cadastros.Cartao;
+import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
-import entities.produto.Livro;
 
 public class FachadaCliente implements IFachada {
 
@@ -29,17 +32,22 @@ public class FachadaCliente implements IFachada {
 		rns = new HashMap<String, Map<String, List<IStrategy>>>();
 		
 		ClienteDAO clienteDAO = new ClienteDAO();
+		CartaoCreditoDAO cartaoCreditoDAO = new CartaoCreditoDAO();
 		
 		daos.put(Cliente.class.getName(), clienteDAO);
-		
+		daos.put(CartaoCredito.class.getName(), cartaoCreditoDAO);
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
-		//rnsSalvarLivro.add(new ValidarCamposObrigadoriosLivro());
+		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
+		rnsSalvarCartao.add(new ValidarCamposCartaoCredito());
 		
 		Map<String, List<IStrategy>> rnsCliente = new HashMap<String, List<IStrategy>>();
+		Map<String,List<IStrategy>> rnsCartaoCredito = new HashMap<>();
+		rnsCliente.put("SALVAR", rnsSalvarCliente);
+		rnsCartaoCredito.put("SALVAR", rnsSalvarCartao);
 		
-		rnsCliente.put("SALVAR", rnsSalvarCliente);	
 		
-		rns.put(Livro.class.getName(), rnsCliente);
+		rns.put(Cliente.class.getName(), rnsCliente);
+		rns.put(Cartao.class.getName(), rnsCartaoCredito);
 	}
 	
 	

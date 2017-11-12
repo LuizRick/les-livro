@@ -9,6 +9,10 @@ public class CartaoCredito extends Cartao {
 	private String codigo;
 
 	private Date validade;
+	
+	private Boolean addPerfil;
+	
+	private Integer id_cliente;
 
 	public String getBandeira() {
 		return bandeira;
@@ -32,6 +36,22 @@ public class CartaoCredito extends Cartao {
 
 	public void setValidade(Date validade) {
 		this.validade = validade;
+	}
+
+	public Boolean getAddPerfil() {
+		return addPerfil;
+	}
+
+	public void setAddPerfil(Boolean addPerfil) {
+		this.addPerfil = addPerfil;
+	}
+
+	public Integer getId_cliente() {
+		return id_cliente;
+	}
+
+	public void setId_cliente(Integer id_cliente) {
+		this.id_cliente = id_cliente;
 	}
 
 }

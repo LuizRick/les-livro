@@ -1,3 +1,4 @@
+
 $("#txtEdicao,#txtTitulo").on('focus',() => {
 	$(window).scrollTop(0);
 });
@@ -42,12 +43,29 @@ $('body').on('focusin', '.input-phone', function() {
 });
 
 
+$("#btnAddCupom").on('click',(e) => {
+	$("#lista_cupons")
+	.find(".form-group:last")
+	.append(`<div class="form-group relative">
+	    	<label>Codigo Cupom</label><span class="remover glyphicon glyphicon-trash"></span>
+	    	<input type="text" id="codigoCupom" name="cupom.codigo" class="form-control"/>
+	    	</div>`);
+});
+
+$("#lista_cupons").on('click','.remover',function(){
+	$(this).parent().remove();
+});
+
+
 $("#resetar").on('click',function(){
 	$("#frmCadastrar input").val("");
 });
 
 +function(){
   var app = angular.module("app",[]);
+  if(getParameterByName("msg") != "0"){
+	  $("#msg").html(`<div class='alert alert-info'>${getParameterByName('msg')}</div>`);
+  }
   app.controller('FormClienteController',['$scope', function($scope){
         this.tab = "tab1";
         this.telefones = [1];

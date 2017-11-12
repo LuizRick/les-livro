@@ -15,8 +15,11 @@ import core.util.ConvertDate;
 import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
+import entities.cadastros.Cidade;
 import entities.cadastros.Cliente;
 import entities.cadastros.Endereco;
+import entities.cadastros.Estado;
+import entities.cadastros.Pais;
 import entities.cadastros.PessoaFisica;
 import entities.cadastros.Telefone;
 import entities.produto.Livro;
@@ -25,50 +28,50 @@ public class ClienteDAO extends AbstractJdbcDAO {
 
 	public ClienteDAO() {
 		// TODO Auto-generated constructor stub
-		super("cliente","id");
+		super("cliente", "id");
 	}
-	
+
 	@Override
 	public void salvar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
 		openConnection();
 		PreparedStatement pst = null;
 		Cliente cliente = (Cliente) entidade;
-		try{
+		try {
 			connection.setAutoCommit(false);
 			StringBuilder sql = new StringBuilder();
-			sql.append("INSERT INTO cliente(nome, nascimento, genero, cpf, email, senha)"
-					+ "VALUES (?, ?, ?, ?, ?, ?);");
-			pst = connection.prepareStatement(sql.toString(),Statement.RETURN_GENERATED_KEYS);
+			sql.append(
+					"INSERT INTO cliente(nome, nascimento, genero, cpf, email, senha)" + "VALUES (?, ?, ?, ?, ?, ?);");
+			pst = connection.prepareStatement(sql.toString(), Statement.RETURN_GENERATED_KEYS);
 			pst.setString(1, cliente.getPessoa().getNome());
 			Date date = new Date(cliente.getPessoa().getNascimento().getTime());
 			pst.setDate(2, date);
 			pst.setString(3, cliente.getPessoa().getGenero() + "");
-			pst.setString(4, ((PessoaFisica)cliente.getPessoa()).getCpf());
+			pst.setString(4, ((PessoaFisica) cliente.getPessoa()).getCpf());
 			pst.setString(5, cliente.getEmail());
 			pst.setString(6, cliente.getSenha());
 			pst.executeUpdate();
 			ResultSet rs = pst.getGeneratedKeys();
 			int id = 0;
-			if(rs.next())
+			if (rs.next())
 				id = rs.getInt(1);
 			cliente.setId(id);
-			for(int i = 0;i < cliente.getTelefone().size();i++){
+			for (int i = 0; i < cliente.getTelefone().size(); i++) {
 				Telefone t = cliente.getTelefone().get(i);
-				pst = connection.prepareStatement("INSERT INTO telefone(codigo_area, numero, tipo, id_cliente)"
-						+ " VALUES (?, ?, ?, ?);");
+				pst = connection.prepareStatement(
+						"INSERT INTO telefone(codigo_area, numero, tipo, id_cliente)" + " VALUES (?, ?, ?, ?);");
 				pst.setString(1, t.getArea());
 				pst.setString(2, t.getNumero());
 				pst.setInt(3, t.getTipo().valorTipo);
 				pst.setInt(4, cliente.getId());
 				pst.executeUpdate();
 			}
-			for(int i=0;i < cliente.getEndereco().size();i++){
+			for (int i = 0; i < cliente.getEndereco().size(); i++) {
 				Endereco e = cliente.getEndereco().get(i);
 				pst = connection.prepareStatement(
 						"INSERT INTO endereco(logradouro, bairro, cep, numero, complemento, nome, tipo_residencia, "
-						+ "tipo_logradouro, cidade, estado, pais, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-				pst.setString(1,e.getLogradouro());
+								+ "tipo_logradouro, cidade, estado, pais, id_cliente) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+				pst.setString(1, e.getLogradouro());
 				pst.setString(2, e.getBairro());
 				pst.setString(3, e.getCep());
 				pst.setString(4, e.getNumero());
@@ -82,28 +85,28 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.setInt(12, cliente.getId());
 				pst.executeUpdate();
 			}
-			
-			for(int i = 0;i < cliente.getCartao().size();i++){
+
+			for (int i = 0; i < cliente.getCartao().size(); i++) {
 				CartaoCredito card = (CartaoCredito) cliente.getCartao().get(i);
-				pst = connection.prepareStatement("INSERT INTO cartao_credito("+
-			            "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"+
-					    "VALUES (?, ?, ?, ?, ?, ?);");
+				pst = connection.prepareStatement("INSERT INTO cartao_credito("
+						+ "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"
+						+ "VALUES (?, ?, ?, ?, ?, ?);");
 				pst.setString(1, card.getTitular());
 				pst.setString(2, card.getNumero());
 				pst.setString(3, card.getBandeira());
 				pst.setString(4, card.getCodigo());
-				pst.setDate(5, new java.sql.Date( card.getValidade().getTime()));
+				pst.setDate(5, new java.sql.Date(card.getValidade().getTime()));
 				pst.setInt(6, cliente.getId());
 				pst.executeUpdate();
 			}
 			connection.commit();
-		}catch(SQLException e){
+		} catch (SQLException e) {
 			connection.rollback();
 			e.printStackTrace();
-		}finally{
-			try{
+		} finally {
+			try {
 				pst.close();
-			}catch(SQLException e1){
+			} catch (SQLException e1) {
 				e1.printStackTrace();
 			}
 		}
@@ -115,7 +118,7 @@ public class ClienteDAO extends AbstractJdbcDAO {
 		openConnection();
 		PreparedStatement pst = null;
 		Cliente cliente = (Cliente) entidade;
-		try{
+		try {
 			StringBuilder sql = new StringBuilder();
 			sql.append("UPDATE cliente SET  nome=?, nascimento=?, genero=?, cpf=?, email=?, senha=? WHERE id = ?;)");
 			pst = connection.prepareStatement(sql.toString());
@@ -123,28 +126,29 @@ public class ClienteDAO extends AbstractJdbcDAO {
 			Date date = new Date(cliente.getPessoa().getNascimento().getTime());
 			pst.setDate(2, date);
 			pst.setString(3, cliente.getPessoa().getGenero() + "");
-			pst.setString(4, ((PessoaFisica)cliente.getPessoa()).getCpf());
+			pst.setString(4, ((PessoaFisica) cliente.getPessoa()).getCpf());
 			pst.setString(5, cliente.getEmail());
 			pst.setString(6, cliente.getSenha());
 			pst.setInt(7, cliente.getId());
 			pst.executeUpdate();
 			pst = connection.prepareStatement(sql.toString());
-			for(int i = 0;i < cliente.getTelefone().size();i++){
+			for (int i = 0; i < cliente.getTelefone().size(); i++) {
 				Telefone t = cliente.getTelefone().get(i);
-				pst = connection.prepareStatement("UPDATE telefone SET  codigo_area=?, numero=?, tipo=? WHERE id_cliente= ?;");
+				pst = connection
+						.prepareStatement("UPDATE telefone SET  codigo_area=?, numero=?, tipo=? WHERE id_cliente= ?;");
 				pst.setString(1, t.getArea());
 				pst.setString(2, t.getNumero());
 				pst.setInt(3, t.getTipo().valorTipo);
 				pst.setInt(4, cliente.getId());
 				pst.executeUpdate();
 			}
-			for(int i=0;i < cliente.getEndereco().size();i++){
+			for (int i = 0; i < cliente.getEndereco().size(); i++) {
 				Endereco e = cliente.getEndereco().get(i);
-				pst = connection.prepareStatement(
-						"UPDATE endereco SET logradouro=?, bairro=?, cep=?, numero=?, complemento=?,"+ 
-						       "nome=?, tipo_residencia=?, tipo_logradouro=?, cidade=?, estado=?,"+ 
-						       "pais=?, id_cliente=? WHERE id = ?");
-				pst.setString(1,e.getLogradouro());
+				pst = connection
+						.prepareStatement("UPDATE endereco SET logradouro=?, bairro=?, cep=?, numero=?, complemento=?,"
+								+ "nome=?, tipo_residencia=?, tipo_logradouro=?, cidade=?, estado=?,"
+								+ "pais=?, id_cliente=? WHERE id = ?");
+				pst.setString(1, e.getLogradouro());
 				pst.setString(2, e.getBairro());
 				pst.setString(3, e.getCep());
 				pst.setString(4, e.getNumero());
@@ -159,8 +163,8 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.setInt(13, e.getId());
 				pst.executeUpdate();
 			}
-			
-			for(int i = 0;i <= cliente.getCartao().size();i++){
+
+			for (int i = 0; i <= cliente.getCartao().size(); i++) {
 				CartaoCredito card = (CartaoCredito) cliente.getCartao().get(i);
 				pst = connection.prepareStatement("UPDATE cartao_credito SET titular=?, numero=?, "
 						+ "bandeira=?, codigo_seguranca=?, validade=?, id_cliente=? WHERE id=?;");
@@ -174,7 +178,7 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				pst.executeUpdate();
 			}
 			connection.commit();
-		}catch(SQLException ex){
+		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 	}
@@ -185,42 +189,39 @@ public class ClienteDAO extends AbstractJdbcDAO {
 		PreparedStatement pst = null;
 		Cliente cliente = (Cliente) entidade;
 		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT a.id, a.nome, a.nascimento, a.genero, a.cpf, a.email, a.senha,"
-				+ "coalesce(b.numero,'') as numero,coalesce(b.codigo_area,'') as area FROM cliente a ");
-		sb.append("LEFT JOIN telefone b on (b.id_cliente = a.id)");
+		sb.append("SELECT a.id, a.nome, a.nascimento, a.genero, a.cpf, a.email, a.senha FROM cliente a ");
 		sb.append("WHERE 1=1 ");
-		if(cliente.getId() != null){
+		if (cliente.getId() != null) {
 			sb.append(" and a.id=" + cliente.getId());
 		}
-		if(cliente.getPessoa() != null && cliente.getPessoa().getNome() != null){
+		if (cliente.getPessoa() != null && cliente.getPessoa().getNome() != null) {
 			sb.append(" and a.nome ilike '%" + cliente.getPessoa().getNome() + "%'");
 		}
-		if(cliente.getPessoa() != null && ((PessoaFisica)cliente.getPessoa()).getCpf() != null){
-			sb.append(" and a.cpf ilike '%" + ((PessoaFisica)cliente.getPessoa()).getCpf() + "%'");
+		if (cliente.getPessoa() != null && ((PessoaFisica) cliente.getPessoa()).getCpf() != null) {
+			sb.append(" and a.cpf ilike '%" + ((PessoaFisica) cliente.getPessoa()).getCpf() + "%'");
 		}
-		if(cliente.getEmail() != null && !cliente.getEmail().equals("")){
+		if (cliente.getEmail() != null && !cliente.getEmail().equals("")) {
 			sb.append(" and a.email = '" + cliente.getEmail() + "'");
 		}
-		if(cliente.getSenha() != null && !cliente.getSenha().equals("")){
+		if (cliente.getSenha() != null && !cliente.getSenha().equals("")) {
 			sb.append(" and a.senha = '" + cliente.getSenha() + "'");
 		}
-		if(cliente.getPessoa() != null && cliente.getPessoa().getNascimento() != null){
+		if (cliente.getPessoa() != null && cliente.getPessoa().getNascimento() != null) {
 			sb.append(" and a.nascimento = '" + cliente.getPessoa().getNascimento() + "'");
 		}
-		
-		/*if(cliente.getPessoa() != null  && Character.isAlphabetic(cliente.getPessoa().getGenero())){
-			sb.append(" and a.genero = " + cliente.getPessoa().getGenero());
-		}*/
-		
-		if(cliente.getTelefone() != null && cliente.getTelefone().get(0).getNumero() != null){
-			sb.append( "and b.numero ilike '%" + cliente.getTelefone().get(0).getNumero() + "%'");
-		}
-		try{
+
+		/*
+		 * if(cliente.getPessoa() != null &&
+		 * Character.isAlphabetic(cliente.getPessoa().getGenero())){
+		 * sb.append(" and a.genero = " + cliente.getPessoa().getGenero()); }
+		 */
+
+		try {
 			openConnection();
 			pst = connection.prepareStatement(sb.toString());
 			ResultSet rs = pst.executeQuery();
 			List<EntidadeDominio> clientes = new ArrayList<>();
-			while(rs.next()){
+			while (rs.next()) {
 				Cliente c = new Cliente();
 				c.setId(rs.getInt("id"));
 				PessoaFisica p = new PessoaFisica();
@@ -231,22 +232,65 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				c.setEmail(rs.getString("email"));
 				c.setSenha(rs.getString("senha"));
 				c.setPessoa(p);
-				Telefone t = new Telefone();
+				/* t = new Telefone();
 				t.setArea(rs.getString("area"));
 				t.setNumero(t.getArea() + "" + rs.getString("numero"));
 				List<Telefone> lst = new ArrayList<>();
 				lst.add(t);
-				c.setTelefone(lst);
+				c.setTelefone(lst);*/
+				pst = connection.prepareStatement("SELECT id, titular, numero, bandeira, codigo_seguranca, validade"
+						+ " FROM cartao_credito WHERE id_cliente = ?");
+				pst.setInt(1, c.getId());
+				ResultSet rsCard = pst.executeQuery();
+				List<Cartao> cartoes = new ArrayList<>();
+				while (rsCard.next()) {
+					CartaoCredito cc = new CartaoCredito();
+					cc.setId(rsCard.getInt("id"));
+					cc.setBandeira(rsCard.getString("bandeira"));
+					cc.setTitular(rsCard.getString("titular"));
+					cc.setNumero(rsCard.getString("numero"));
+					cc.setCodigo(rsCard.getString("codigo_seguranca"));
+					cc.setValidade(rsCard.getDate("validade"));
+					cartoes.add(cc);
+				}
+				rsCard.close();
+				pst = connection.prepareStatement("SELECT  id, logradouro, bairro, cep, numero, complemento, nome, tipo_residencia," + 
+						" tipo_logradouro, cidade, estado, pais FROM endereco WHERE id_cliente = ?");
+				pst.setInt(1, c.getId());
+				List<Endereco> enderecos = new ArrayList<>();
+				ResultSet rsEnd = pst.executeQuery();
+				while(rsEnd.next()) {
+					Endereco e  = new Endereco();
+					e.setId(rsEnd.getInt("id"));
+					e.setLogradouro(rsEnd.getString("logradouro"));
+					e.setBairro(rsEnd.getString("bairro"));
+					e.setCep(rsEnd.getString("cep"));
+					e.setNumero(rsEnd.getString("numero"));
+					e.setComplemento(rsEnd.getString("complemento"));
+					e.setNome(rsEnd.getString("nome"));
+					e.setTipoLogradouro(rsEnd.getString("tipo_residencia"));
+					e.setTipoLogradouro(rsEnd.getString("tipo_logradouro"));
+					Cidade cidade = new Cidade();
+					cidade.setNome(rsEnd.getString("cidade"));
+					Estado estado = new Estado();
+					estado.setNome(rsEnd.getString("estado"));
+					Pais pais = new Pais();
+					pais.setNome(rsEnd.getString("pais"));
+					estado.setPais(pais);
+					cidade.setEstado(estado);
+					e.setCidade(cidade);
+					enderecos.add(e);
+				}
+				rsEnd.close();
+				c.setCartao(cartoes);
+				c.setEndereco(enderecos);
 				clientes.add(c);
-				
 			}
 			return clientes;
-		}catch(SQLException ex){
+		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 		return null;
 	}
-	
-	
 
 }

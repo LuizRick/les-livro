@@ -4,7 +4,7 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:pm="http://primefaces.org/mobile">
+	xmlns:pm="http://primefaces.org/mobile" ng-app="app">
 <h:head>
 	<title>Login</title>
 	<h:outputStylesheet library="css" name="bootstrap.css" />
@@ -31,6 +31,7 @@
 			<div class="col-lg-6 col-sm-6">
 				<fieldset>
 					<legend>Login CLiente</legend>
+					<span id="msg"></span>
 					<form action="loginCliente" method="post">
 						<div class="form-group">
 							<label>Email:</label> <input type="text" name="email" class="form-control"/>
@@ -47,5 +48,9 @@
 			</div>
 		</div>
 	</div>
+	<h:outputScript library="primefaces" name="jquery/jquery.js" />
+	<h:outputScript library="js" name="bootstrap.min.js" />
+	<h:outputScript library="js" name="angular.js"/>
+	<h:outputScript library="js" name="script.js" />
 </h:body>
 </html>

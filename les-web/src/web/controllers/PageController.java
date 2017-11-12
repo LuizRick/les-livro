@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,11 +21,15 @@ import org.springframework.web.bind.support.SessionStatus;
 
 import core.dfs.aplicacao.Resultado;
 import core.impl.dao.ClienteDAO;
+import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
 import entities.produto.Livro;
 import entities.venda.CarrinhoCompra;
 import web.controle.web.command.ICommand;
+import web.controle.web.command.impl.AlterarClienteCommand;
+import web.controle.web.command.impl.ConsultarClienteCommand;
 import web.controle.web.command.impl.ConsultarCommand;
+import web.controle.web.command.impl.SalvarClienteCommand;
 import web.controle.web.command.impl.SalvarCommand;
 import entities.venda.Item;
 
@@ -39,8 +42,9 @@ public class PageController {
 	public PageController() {
 		// TODO Auto-generated constructor stub
 		commands = new HashMap<String, ICommand>();
-		commands.put("SALVAR", new SalvarCommand());
-		commands.put("CONSULTAR", new ConsultarCommand());
+		commands.put("SALVAR", new SalvarClienteCommand());
+		commands.put("CONSULTAR", new ConsultarClienteCommand());
+		commands.put("ALTERAR", new AlterarClienteCommand());
 	}
 
 	@RequestMapping("/olaSpring")
@@ -56,7 +60,7 @@ public class PageController {
 		cliente = (Cliente) dao.consultar(cliente).get(0);
 		if (cliente != null) {
 			request.getSession().setAttribute("cliente", cliente);
-			return "redirect:/cliente/ListarClientes.jsp";
+			return "redirect:/public/verifyCart";
 		}
 		return "redirect:login.xhtml";
 	}
@@ -148,10 +152,13 @@ public class PageController {
 	}
 
 	@RequestMapping("/public/finalizar")
-	public String finalizarCompra(@ModelAttribute("carrinho") CarrinhoCompra carrinho, SessionStatus session,
+	public String finalizarCompra(@ModelAttribute("carrinho") CarrinhoCompra carrinho, Model model,
 			HttpServletRequest request) {
-		session.setComplete();
-		return "redirect:/public/index";
+		if(request.getSession().getAttribute("cliente") == null)
+			return "redirect:/login.xhtml?msg=faca+login";
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		model.addAttribute("cliente", cliente);
+		return "ecommerce/finalizar";
 	}
 
 	@RequestMapping("/public/verifyCart")
@@ -169,6 +176,23 @@ public class PageController {
 		if (result.hasErrors())
 			return "erro";
 		return "index";
+	}
+	
+	@RequestMapping(value="/public/adicionarCartao", method=RequestMethod.GET)
+	public String adicionarCartao(HttpServletRequest request) {
+		if(request.getSession().getAttribute("cliente") == null)
+			return "redirect:/login.xhtml?msg=faca+login";
+		return "ecommerce/addcartao";
+	}
+
+	@RequestMapping(value="/public/adicionarCartao", method=RequestMethod.POST)
+	public String adicionarCartao(CartaoCredito cartao,String operacao,Model model,HttpServletRequest request) {
+		if(cartao.getAddPerfil()) {
+			ICommand command = commands.get(operacao);
+			Resultado resultado = command.execute(cartao);
+			model.addAttribute("resultado", resultado);
+		}
+		return "ecommerce/addcartao";
 	}
 
 }
