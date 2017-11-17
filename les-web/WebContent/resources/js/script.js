@@ -1,5 +1,5 @@
 
-$("#txtEdicao,#txtTitulo").on('focus',() => {
+$("#txtEdicao,#txtTitulo").on('focus',function() {
 	$(window).scrollTop(0);
 });
 
@@ -14,9 +14,8 @@ $("body").on('focusin',"[data-mask]", () => {
 	
 });
 
-$("[data-mask]").each((i,elt) =>{
+$("body [data-mask]").each((i,elt) =>{
 	var mask = $(elt).attr("data-mask");
-	console.dir(elt);
 	$(elt).mask(mask);
 	$(elt).attr("placeholder",mask);
 });
@@ -24,17 +23,21 @@ $("[data-mask]").each((i,elt) =>{
 $('body').on('focusin', '.input-phone', function() {
     var $this = $(this);
     if( (typeof $this.data()['rawMaskFn'] !== "function") ) {
-        //dynamically adds the mask plugin
-        $this.mask("(99)-9999-9999"); //probably adds a blur event
+        // dynamically adds the mask plugin
+        $this.mask("(99)-9999-9999"); // probably adds a blur event
 
-        //make sure its the first thing in blur event
-        if($this.hasClass('input-cell-phone')) { //********* moved here so this blur event can get added after the above event
+        // make sure its the first thing in blur event
+        if($this.hasClass('input-cell-phone')) { // ********* moved here so
+													// this blur event can get
+													// added after the above
+													// event
 
-            $('.input-cell-phone').blur(function() {//on() way doesnt work here for some reason
-                //if clear cell phone, make sure to clear daytime phone
+            $('.input-cell-phone').blur(function() {// on() way doesnt work here
+													// for some reason
+                // if clear cell phone, make sure to clear daytime phone
                 var phone_val = $.trim($(this).val());
                 if(phone_val==""){
-                    //find daytime equivilent and clear too
+                    // find daytime equivilent and clear too
                     $(this).parents('.container').find('input.input-day-phone').val('');
                 }
             });
@@ -43,14 +46,7 @@ $('body').on('focusin', '.input-phone', function() {
 });
 
 
-$("#btnAddCupom").on('click',(e) => {
-	$("#lista_cupons")
-	.find(".form-group:last")
-	.append(`<div class="form-group relative">
-	    	<label>Codigo Cupom</label><span class="remover glyphicon glyphicon-trash"></span>
-	    	<input type="text" id="codigoCupom" name="cupom.codigo" class="form-control"/>
-	    	</div>`);
-});
+
 
 $("#lista_cupons").on('click','.remover',function(){
 	$(this).parent().remove();
@@ -61,11 +57,123 @@ $("#resetar").on('click',function(){
 	$("#frmCadastrar input").val("");
 });
 
+
+$(".cardcheck").on('click',function(){
+	var index = $(this).attr("data-index");
+	var elt = $("[data-cardindex='" + index + "']");
+	if(this.checked){
+		elt.removeAttr("disabled");
+	}else{
+		elt.attr("disabled","disabled");
+	}
+});
+
+
+$('body').on('change','.cupomcompra',function(){
+	
+});
+
+$("#descontos").on('change',function(){
+	var value = parseFloat($(this).val());
+	var total = Number($("#totalPago").val());
+});
+
 +function(){
   var app = angular.module("app",[]);
   if(getParameterByName("msg") != "0"){
 	  $("#msg").html(`<div class='alert alert-info'>${getParameterByName('msg')}</div>`);
   }
+  
+  app.controller('FinalizacaoCompraController',['$scope',function($scope){
+	  var self = this;
+	  this.totalPago = 0;
+	  this.total = 0;
+	  this.descontos = 0;
+	  this.cupons = [];
+	  
+	  this.setProp = function(prop,value){
+		  self[prop] = value;
+		  return value;
+	  }
+	  
+	  $("[data-cardindex]").on('change',function(){
+		  var value = 0;
+		  $("[data-cardindex]:enabled").each(function(i,elt){
+			 var num = parseFloat(elt.value); 
+			 if(isNaN(num)){
+				 num = 0;
+				 $(elt).val("0.0");
+			 }
+			 value += num;
+		  });
+		  if(isNaN(value))
+			  value = 0;
+		  var desconto = Number($("#descontos").val());
+		  var total = self.total - (value  + desconto);
+		  if(total < 0){
+			  alert("valor + descontos ultrapassa o valor total do pedido");
+			  $(this).focus();
+		  }else{
+			  $('#totalPago').val(total.toFixed(2));
+		  }
+		  $scope.$apply();
+	  });
+	  
+	  $("#btnAddCupom").on('click',function(){
+			var Model = {};
+			Model.codigoCupom = $("#codigoCupom").val();
+			for(var x in self.cupons){
+				var item = self.cupons[x];
+				if(item.valor && item.codigoCupom == Model.codigoCupom){
+					alert("Desconto ja foi aplicado");
+					return;
+				}
+			}
+			WebRequestAsync('verificarCupom',Model).then(function(resp){
+				var descontos = Number($("#descontos").val());
+				var total = Number($("#totalPago").val());
+				if(isNaN(descontos))
+					descontos = 0;
+				if(resp.valor){
+					if(total - (descontos + resp.valor) < 0)
+						alert("não foi possivel aplicar desconto pois o mesmo passa do necessario para compra tente um cupom de menor valor");
+					else{
+						descontos += resp.valor;
+						$("#descontos").val(descontos);
+						self.cupons.push(resp);
+						$scope.$apply();
+						alert("desconto aplicado com successo");
+					}
+				}else{
+					alert("Cupom não localizado")
+				}
+			}).catch(function(err,status,xhr){
+				
+			});
+		});
+	  
+	  $("#frmSetCompra").on('submit',function(e){
+		 var form = document.getElementById('frmSetCompra');
+		 var value = 0;
+		  $("[data-cardindex]:enabled").each(function(i,elt){
+			 var num = parseFloat(elt.value); 
+			 if(isNaN(num)){
+				 num = 0;
+				 $(elt).val("0.0");
+			 }
+			 value += num;
+		  });
+		  if(isNaN(value))
+			  value = 0;
+		  var desconto = Number($("#descontos").val());
+		  var total = self.total - (value  + desconto);
+		  if(total > (value + desconto)){
+			  alert("Cartao(es) + descontos nao abate o valor total da compra");
+			  return false;
+		  }
+	  });
+  }]);
+  
   app.controller('FormClienteController',['$scope', function($scope){
         this.tab = "tab1";
         this.telefones = [1];
@@ -118,6 +226,24 @@ $("#resetar").on('click',function(){
         this.getParameterUrl = getParameterByName;
   }]);
 }();
+
+function WebRequestAsync(urlSend,objData){
+	return new Promise(function(resolve, reject){
+		$.ajax({
+			url:urlSend,
+			async:true,
+			data:objData,
+			type:"post",
+			dataType: 'json',
+			success:function(resp){
+				resolve(resp);
+			},
+			error:function(err,status,xhr){
+				reject(err,status,xhr);
+			}
+		});
+	});
+}
 
 function loadPage(url){
 	window.location = url;

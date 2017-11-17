@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dominio.EntidadeDominio;
+import entities.cadastros.CartaoCredito;
 import entities.produto.Categoria;
 
 public class CategoriaDAO extends AbstractJdbcDAO {
@@ -19,7 +20,24 @@ public class CategoriaDAO extends AbstractJdbcDAO {
 	@Override
 	public void salvar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
-
+		PreparedStatement pst = null;
+		CartaoCredito card = (CartaoCredito) entidade;
+		try {
+			pst = connection.prepareStatement("INSERT INTO cartao_credito("
+					+ "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"
+					+ "VALUES (?, ?, ?, ?, ?, ?);");
+			pst.setString(1, card.getTitular());
+			pst.setString(2, card.getNumero());
+			pst.setString(3, card.getBandeira());
+			pst.setString(4, card.getCodigo());
+			pst.setDate(5, new java.sql.Date(card.getValidade().getTime()));
+			pst.setInt(6, card.getId_cliente());
+			pst.executeUpdate();
+		}catch(SQLException ex) {
+			ex.printStackTrace();
+		}finally {
+			connection.close();
+		}
 	}
 
 	@Override
@@ -32,10 +50,10 @@ public class CategoriaDAO extends AbstractJdbcDAO {
 	public List<EntidadeDominio> consultar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement pst = null;
-		Categoria categoria = (Categoria) entidade;
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT id,nome FROM categoria \n");
-		if(categoria != null){
+		if(entidade != null){
+			Categoria categoria = (Categoria) entidade;
 			sb.append("WHERE 1=1\n");
 			if(categoria.getId() != null){
 				sb.append(" and id = " + categoria.getId() + "\n");
@@ -59,6 +77,8 @@ public class CategoriaDAO extends AbstractJdbcDAO {
 			return categorias;
 		}catch(SQLException ex){
 			ex.printStackTrace();
+		}finally {
+			connection.close();
 		}
 		return null;
 	}

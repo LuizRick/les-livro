@@ -25,6 +25,8 @@ public class Endereco extends EntidadeDominio {
 	private String observacao;
 	
 	private Boolean preferencial;
+	
+	public String id_cliente;
 
 	public String getLogradouro() {
 		return logradouro;
@@ -112,6 +114,14 @@ public class Endereco extends EntidadeDominio {
 
 	public void setPreferencial(Boolean preferencial) {
 		this.preferencial = preferencial;
+	}
+
+	public String getId_cliente() {
+		return id_cliente;
+	}
+
+	public void setId_cliente(String id_cliente) {
+		this.id_cliente = id_cliente;
 	}
 
 }

@@ -13,7 +13,7 @@ import core.dfs.aplicacao.Resultado;
 import core.impl.dao.CartaoCreditoDAO;
 import core.impl.dao.ClienteDAO;
 import core.impl.negocio.ValidarCamposCartaoCredito;
-import core.impl.negocio.ValidarCamposObrigadoriosLivro;
+import core.impl.negocio.ValidarCamposObrigatoriosCliente;
 import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
@@ -39,6 +39,7 @@ public class FachadaCliente implements IFachada {
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
 		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
 		rnsSalvarCartao.add(new ValidarCamposCartaoCredito());
+		rnsSalvarCliente.add(new ValidarCamposObrigatoriosCliente());
 		
 		Map<String, List<IStrategy>> rnsCliente = new HashMap<String, List<IStrategy>>();
 		Map<String,List<IStrategy>> rnsCartaoCredito = new HashMap<>();
@@ -47,7 +48,7 @@ public class FachadaCliente implements IFachada {
 		
 		
 		rns.put(Cliente.class.getName(), rnsCliente);
-		rns.put(Cartao.class.getName(), rnsCartaoCredito);
+		rns.put(CartaoCredito.class.getName(), rnsCartaoCredito);
 	}
 	
 	

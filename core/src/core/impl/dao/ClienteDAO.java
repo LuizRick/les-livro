@@ -180,6 +180,9 @@ public class ClienteDAO extends AbstractJdbcDAO {
 			connection.commit();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+			connection.rollback();
+		} finally {
+			connection.close();
 		}
 	}
 
@@ -187,27 +190,30 @@ public class ClienteDAO extends AbstractJdbcDAO {
 	public List<EntidadeDominio> consultar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement pst = null;
-		Cliente cliente = (Cliente) entidade;
+
 		StringBuilder sb = new StringBuilder();
 		sb.append("SELECT a.id, a.nome, a.nascimento, a.genero, a.cpf, a.email, a.senha FROM cliente a ");
 		sb.append("WHERE 1=1 ");
-		if (cliente.getId() != null) {
-			sb.append(" and a.id=" + cliente.getId());
-		}
-		if (cliente.getPessoa() != null && cliente.getPessoa().getNome() != null) {
-			sb.append(" and a.nome ilike '%" + cliente.getPessoa().getNome() + "%'");
-		}
-		if (cliente.getPessoa() != null && ((PessoaFisica) cliente.getPessoa()).getCpf() != null) {
-			sb.append(" and a.cpf ilike '%" + ((PessoaFisica) cliente.getPessoa()).getCpf() + "%'");
-		}
-		if (cliente.getEmail() != null && !cliente.getEmail().equals("")) {
-			sb.append(" and a.email = '" + cliente.getEmail() + "'");
-		}
-		if (cliente.getSenha() != null && !cliente.getSenha().equals("")) {
-			sb.append(" and a.senha = '" + cliente.getSenha() + "'");
-		}
-		if (cliente.getPessoa() != null && cliente.getPessoa().getNascimento() != null) {
-			sb.append(" and a.nascimento = '" + cliente.getPessoa().getNascimento() + "'");
+		if (entidade != null) {
+			Cliente cliente = (Cliente) entidade;
+			if (cliente.getId() != null) {
+				sb.append(" and a.id=" + cliente.getId());
+			}
+			if (cliente.getPessoa() != null && cliente.getPessoa().getNome() != null) {
+				sb.append(" and a.nome ilike '%" + cliente.getPessoa().getNome() + "%'");
+			}
+			if (cliente.getPessoa() != null && ((PessoaFisica) cliente.getPessoa()).getCpf() != null) {
+				sb.append(" and a.cpf ilike '%" + ((PessoaFisica) cliente.getPessoa()).getCpf() + "%'");
+			}
+			if (cliente.getEmail() != null && !cliente.getEmail().equals("")) {
+				sb.append(" and a.email = '" + cliente.getEmail() + "'");
+			}
+			if (cliente.getSenha() != null && !cliente.getSenha().equals("")) {
+				sb.append(" and a.senha = '" + cliente.getSenha() + "'");
+			}
+			if (cliente.getPessoa() != null && cliente.getPessoa().getNascimento() != null) {
+				sb.append(" and a.nascimento = '" + cliente.getPessoa().getNascimento() + "'");
+			}
 		}
 
 		/*
@@ -232,12 +238,11 @@ public class ClienteDAO extends AbstractJdbcDAO {
 				c.setEmail(rs.getString("email"));
 				c.setSenha(rs.getString("senha"));
 				c.setPessoa(p);
-				/* t = new Telefone();
-				t.setArea(rs.getString("area"));
-				t.setNumero(t.getArea() + "" + rs.getString("numero"));
-				List<Telefone> lst = new ArrayList<>();
-				lst.add(t);
-				c.setTelefone(lst);*/
+				/*
+				 * t = new Telefone(); t.setArea(rs.getString("area")); t.setNumero(t.getArea()
+				 * + "" + rs.getString("numero")); List<Telefone> lst = new ArrayList<>();
+				 * lst.add(t); c.setTelefone(lst);
+				 */
 				pst = connection.prepareStatement("SELECT id, titular, numero, bandeira, codigo_seguranca, validade"
 						+ " FROM cartao_credito WHERE id_cliente = ?");
 				pst.setInt(1, c.getId());
@@ -254,13 +259,14 @@ public class ClienteDAO extends AbstractJdbcDAO {
 					cartoes.add(cc);
 				}
 				rsCard.close();
-				pst = connection.prepareStatement("SELECT  id, logradouro, bairro, cep, numero, complemento, nome, tipo_residencia," + 
-						" tipo_logradouro, cidade, estado, pais FROM endereco WHERE id_cliente = ?");
+				pst = connection.prepareStatement(
+						"SELECT  id, logradouro, bairro, cep, numero, complemento, nome, tipo_residencia,"
+								+ " tipo_logradouro, cidade, estado, pais FROM endereco WHERE id_cliente = ?");
 				pst.setInt(1, c.getId());
 				List<Endereco> enderecos = new ArrayList<>();
 				ResultSet rsEnd = pst.executeQuery();
-				while(rsEnd.next()) {
-					Endereco e  = new Endereco();
+				while (rsEnd.next()) {
+					Endereco e = new Endereco();
 					e.setId(rsEnd.getInt("id"));
 					e.setLogradouro(rsEnd.getString("logradouro"));
 					e.setBairro(rsEnd.getString("bairro"));
@@ -289,6 +295,8 @@ public class ClienteDAO extends AbstractJdbcDAO {
 			return clientes;
 		} catch (SQLException ex) {
 			ex.printStackTrace();
+		} finally {
+			connection.close();
 		}
 		return null;
 	}

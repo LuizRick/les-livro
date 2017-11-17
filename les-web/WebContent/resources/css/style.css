@@ -23,3 +23,7 @@ footer{
 .remover:hover{
 	cursor:pointer;
 }
+
+.text-upper{
+	text-transform: uppercase;
+}

@@ -5,6 +5,7 @@ import entities.cadastros.Endereco;
 public class Frete {
 	private Endereco endereco;
 	private Double valor;
+	
 	public Endereco getEndereco() {
 		return endereco;
 	}

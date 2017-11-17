@@ -19,6 +19,8 @@ public class Cliente extends Usuario {
 	private Ranking ranking;
 
 	private List<Cartao> cartao;
+	
+	private List<CupomCompra> cupons;
 
 	public String getEmail() {
 		return email;
@@ -74,6 +76,14 @@ public class Cliente extends Usuario {
 
 	public void setCartao(List<Cartao> cartao) {
 		this.cartao = cartao;
+	}
+
+	public List<CupomCompra> getCupons() {
+		return cupons;
+	}
+
+	public void setCupons(List<CupomCompra> cupons) {
+		this.cupons = cupons;
 	}
 
 }

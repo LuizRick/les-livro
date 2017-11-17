@@ -20,6 +20,11 @@ public abstract class AbstractJdbcDAO implements IDAO {
 		this.connection = connection;
 	}
 
+	/**
+	 * 
+	 * @param table - tabela
+	 * @param idTable - id da tabela
+	 */
 	protected AbstractJdbcDAO(String table, String idTable) {
 		this.table = table;
 		this.idTable = idTable;
