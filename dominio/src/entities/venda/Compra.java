@@ -3,11 +3,17 @@ package entities.venda;
 import java.util.List;
 
 import dominio.EntidadeDominio;
+import entities.cadastros.Cartao;
+import entities.cadastros.CartaoCredito;
+import entities.cadastros.Cliente;
+import entities.cadastros.CupomCompra;
 
 public class Compra extends EntidadeDominio {
+	private Cliente cliente;
 	private CarrinhoCompra produtos;
 	private Frete frete;
-	private List<IFormaPagamento> formasPagamento;
+	private List<CartaoCredito> formasPagamento;
+	private List<CupomCompra> cuponCompra;
 	private StatusCompra statusCompra;
 	private Double total;
 	
@@ -23,10 +29,10 @@ public class Compra extends EntidadeDominio {
 	public void setFrete(Frete frete) {
 		this.frete = frete;
 	}
-	public List<IFormaPagamento> getFormasPagamento() {
+	public List<CartaoCredito> getFormasPagamento() {
 		return formasPagamento;
 	}
-	public void setFormasPagamento(List<IFormaPagamento> formasPagamento) {
+	public void setFormasPagamento(List<CartaoCredito> formasPagamento) {
 		this.formasPagamento = formasPagamento;
 	}
 	public StatusCompra getStatusCompra() {
@@ -40,5 +46,19 @@ public class Compra extends EntidadeDominio {
 	}
 	public void setTotal(Double total) {
 		this.total = total;
+	}
+	
+	public List<CupomCompra> getCuponCompra() {
+		return cuponCompra;
+	}
+	
+	public void setCuponCompra(List<CupomCompra> cuponCompra) {
+		this.cuponCompra = cuponCompra;
+	}
+	public Cliente getCliente() {
+		return cliente;
+	}
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
 	}
 }

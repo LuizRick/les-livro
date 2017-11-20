@@ -1,5 +1,7 @@
 package entities.cadastros;
 
+import java.util.Date;
+
 import dominio.EntidadeDominio;
 import entities.venda.IFormaPagamento;
 
@@ -8,6 +10,8 @@ public class CupomCompra extends EntidadeDominio implements IFormaPagamento {
 	private String nome;
 	private Double valor;
 	private Boolean valido;
+	private TipoCupom tipo;
+	private Date validade;
 	
 	public CupomCompra() {
 		// TODO Auto-generated constructor stub
@@ -21,7 +25,7 @@ public class CupomCompra extends EntidadeDominio implements IFormaPagamento {
 		this.valido = valido;
 	}
 	
-	public CupomCompra(String codigoCupom,String nome,Double valor) {
+	public CupomCompra(String codigoCupom,String nome,Double valor,TipoCupom tipo) {
 		this(codigoCupom, nome, valor, true);
 	}
 	
@@ -50,5 +54,35 @@ public class CupomCompra extends EntidadeDominio implements IFormaPagamento {
 
 	public void setValido(boolean valido) {
 		this.valido = valido;
+	}
+
+
+	public TipoCupom getTipo() {
+		return tipo;
+	}
+
+
+	public void setTipo(TipoCupom tipo) {
+		this.tipo = tipo;
+	}
+
+
+	public Boolean getValido() {
+		return valido;
+	}
+
+
+	public void setValido(Boolean valido) {
+		this.valido = valido;
+	}
+
+
+	public Date getValidade() {
+		return validade;
+	}
+
+
+	public void setValidade(Date validade) {
+		this.validade = validade;
 	}
 }

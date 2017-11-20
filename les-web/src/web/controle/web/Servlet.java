@@ -21,11 +21,12 @@ import web.controle.web.command.impl.VisualizarClienteCommand;
 import webapp.controle.web.vh.IViewHelper;
 import webapp.controle.web.vh.impl.ClienteViewHelper;
 import webapp.controle.web.vh.impl.ConsultarClienteViewHelper;
+import webapp.controle.web.vh.impl.CompraViewHelper;
 
 /**
  * Servlet implementation class Servlet
  */
-@WebServlet({"/Servlet","/cliente/SalvarCliente","/cliente/ConsultarCliente"})
+@WebServlet({"/Servlet","/cliente/SalvarCliente","/cliente/ConsultarCliente","/public/setcompra"})
 public class Servlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Map<String, ICommand> commands;
@@ -44,6 +45,7 @@ public class Servlet extends HttpServlet {
         vhs = new HashMap<String, IViewHelper>();
         vhs.put("/les-web/cliente/SalvarCliente",new ClienteViewHelper());
         vhs.put("/les-web/cliente/ConsultarCliente", new ConsultarClienteViewHelper());
+        vhs.put("/les-web/public/setcompra", new CompraViewHelper());
     }
 
 	/**

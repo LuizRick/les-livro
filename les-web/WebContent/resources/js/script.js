@@ -142,6 +142,7 @@ $("#descontos").on('change',function(){
 						$("#descontos").val(descontos);
 						self.cupons.push(resp);
 						$scope.$apply();
+						$("#frmSetCompra").append(`<input type='hidden' name='cupomCompra' value='${resp.codigoCupom}'/>`);
 						alert("desconto aplicado com successo");
 					}
 				}else{
@@ -153,15 +154,22 @@ $("#descontos").on('change',function(){
 		});
 	  
 	  $("#frmSetCompra").on('submit',function(e){
+		  var obj = {};
+		  obj.formasPagamento = [];
 		 var form = document.getElementById('frmSetCompra');
 		 var value = 0;
 		  $("[data-cardindex]:enabled").each(function(i,elt){
-			 var num = parseFloat(elt.value); 
+			 var num = parseFloat(elt.value);
+			 var cartao = {
+					 id : $("[data-index]").eq($(elt).attr("data-cardindex")).val(),
+					 valor:num,
+			 };
 			 if(isNaN(num)){
 				 num = 0;
 				 $(elt).val("0.0");
 			 }
 			 value += num;
+			 obj.formasPagamento.push(cartao);
 		  });
 		  if(isNaN(value))
 			  value = 0;
@@ -232,6 +240,25 @@ function WebRequestAsync(urlSend,objData){
 		$.ajax({
 			url:urlSend,
 			async:true,
+			data:objData,
+			type:"post",
+			dataType: 'json',
+			success:function(resp){
+				resolve(resp);
+			},
+			error:function(err,status,xhr){
+				reject(err,status,xhr);
+			}
+		});
+	});
+}
+
+function WebRequestAsyncJson(urlSend,objData){
+	return new Promise(function(resolve, reject){
+		$.ajax({
+			url:urlSend,
+			async:true,
+			contentType:"application/json; charset=utf-8",
 			data:objData,
 			type:"post",
 			dataType: 'json',

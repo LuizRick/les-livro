@@ -1,5 +1,6 @@
 package web.controllers;
 
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -243,11 +245,5 @@ public class PageController {
 			response.setStatus(200);
 			response.getWriter().write("{}");
 		}
-	}
-	
-	@RequestMapping(value="/public/setcompra",method=RequestMethod.POST)
-	public void setCompra(Compra venda,String operacao,Model model) {
-		ICommand commnad = commands.get(operacao);
-		Resultado result = commnad.execute(venda);
 	}
 }

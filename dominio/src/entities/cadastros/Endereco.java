@@ -17,15 +17,15 @@ public class Endereco extends EntidadeDominio {
 	private String nome;
 
 	private Cidade cidade;
-	
+
 	private String tipoLogradouro;
-	
+
 	private String tipoResidencia;
-	
+
 	private String observacao;
-	
+
 	private Boolean preferencial;
-	
+
 	public String id_cliente;
 
 	public String getLogradouro() {
@@ -122,6 +122,16 @@ public class Endereco extends EntidadeDominio {
 
 	public void setId_cliente(String id_cliente) {
 		this.id_cliente = id_cliente;
+	}
+
+	public String getEnderecoCompleto(String endereco) {
+		if (endereco != null)
+			return endereco;
+		else
+			endereco = "Rua:" + this.logradouro + "; Numero:" + this.numero + "; Bairro:" + this.bairro + "; Cep:"
+					+ this.cep + "Cidade: " + this.cidade.getNome() + "; Estado: "
+					+ this.getCidade().getEstado().getNome();
+		return endereco;
 	}
 
 }

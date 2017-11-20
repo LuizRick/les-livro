@@ -12,12 +12,16 @@ import core.dfs.IStrategy;
 import core.dfs.aplicacao.Resultado;
 import core.impl.dao.CartaoCreditoDAO;
 import core.impl.dao.ClienteDAO;
+import core.impl.dao.CompraDAO;
 import core.impl.negocio.ValidarCamposCartaoCredito;
 import core.impl.negocio.ValidarCamposObrigatoriosCliente;
+import core.impl.negocio.ValidarCompraCliente;
+import core.impl.negocio.ValidarFormasPagamento;
 import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
+import entities.venda.Compra;
 
 public class FachadaCliente implements IFachada {
 
@@ -33,22 +37,29 @@ public class FachadaCliente implements IFachada {
 		
 		ClienteDAO clienteDAO = new ClienteDAO();
 		CartaoCreditoDAO cartaoCreditoDAO = new CartaoCreditoDAO();
-		
+		CompraDAO compraDAO  = new CompraDAO();
 		daos.put(Cliente.class.getName(), clienteDAO);
 		daos.put(CartaoCredito.class.getName(), cartaoCreditoDAO);
+		daos.put(Compra.class.getName(),compraDAO);
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
 		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
+		List<IStrategy> rnsSalvarCompra = new ArrayList<>();
+		List<IStrategy> rnsAlterarCompra = new ArrayList<>();
+		
 		rnsSalvarCartao.add(new ValidarCamposCartaoCredito());
 		rnsSalvarCliente.add(new ValidarCamposObrigatoriosCliente());
-		
+		rnsAlterarCompra.add(new ValidarFormasPagamento());
+		rnsSalvarCompra.add(new ValidarCompraCliente());
 		Map<String, List<IStrategy>> rnsCliente = new HashMap<String, List<IStrategy>>();
 		Map<String,List<IStrategy>> rnsCartaoCredito = new HashMap<>();
+		Map<String, List<IStrategy>> rnsCompraCliente = new HashMap<>();
 		rnsCliente.put("SALVAR", rnsSalvarCliente);
 		rnsCartaoCredito.put("SALVAR", rnsSalvarCartao);
-		
-		
+		rnsCompraCliente.put("SALVAR", rnsSalvarCompra);
+		rnsCompraCliente.put("ALTERAR", rnsAlterarCompra);
 		rns.put(Cliente.class.getName(), rnsCliente);
 		rns.put(CartaoCredito.class.getName(), rnsCartaoCredito);
+		rns.put(Compra.class.getName(), rnsCompraCliente);
 	}
 	
 	
