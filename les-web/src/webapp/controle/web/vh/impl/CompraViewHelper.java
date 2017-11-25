@@ -1,6 +1,8 @@
 package webapp.controle.web.vh.impl;
 
+
 import java.io.IOException;
+import java.util.Arrays;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -9,8 +11,15 @@ import javax.servlet.http.HttpServletResponse;
 
 import core.dfs.aplicacao.Resultado;
 import dominio.EntidadeDominio;
+import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
-import entities.venda.Venda;
+import entities.cadastros.CupomCompra;
+import entities.cadastros.Endereco;
+import entities.venda.CarrinhoCompra;
+import entities.venda.Compra;
+import entities.venda.Frete;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import webapp.controle.web.vh.IViewHelper;
 
 public class CompraViewHelper implements IViewHelper {
@@ -18,13 +27,33 @@ public class CompraViewHelper implements IViewHelper {
 	@Override
 	public EntidadeDominio getEntidade(HttpServletRequest request) {
 		// TODO Auto-generated method stub
-		String cartoes[] = request.getParameterValues("formasPagamento.id");
-		String valores[] = request.getParameterValues("formasPagamento.valor");
-		String cuponCompra[] = request.getParameterValues("cupomCompra");
-		String enderecoId = request.getParameter("frete.endereco.id");
-		Venda venda = new Venda();
-		Cliente cliente = (Cliente)request.getSession().getAttribute("cliente");
-		return venda;
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			String jsonCartao = request.getParameter("cartoesJSON");
+			String jsonCupons = request.getParameter("cuponsJSON");
+			String jsonEndereco = request.getParameter("enderecoJSON");
+			String total = request.getParameter("total");
+			String totalFrete  = request.getParameter("totalFrete");
+			String totalDesc  = request.getParameter("totalDesc");
+			CartaoCredito[] credito = mapper.readValue(jsonCartao,CartaoCredito[].class);
+			CupomCompra[] cupons = mapper.readValue(jsonCupons, CupomCompra[].class);
+			Endereco endereco = mapper.readValue(jsonEndereco, Endereco.class);
+			Compra compra = new Compra();
+			Cliente cliente = (Cliente)request.getSession().getAttribute("cliente");
+			CarrinhoCompra carrinho = (CarrinhoCompra) request.getSession().getAttribute("carrinho");
+			Frete frete = new Frete();
+			frete.setEndereco(endereco);
+			frete.setValor(Double.parseDouble(totalFrete));
+			compra.setCliente(cliente);
+			compra.setProdutos(carrinho);
+			compra.setFormasPagamento(Arrays.asList(credito));
+			compra.setCuponCompra(Arrays.asList(cupons));
+			compra.setTotal(Double.parseDouble(total));
+			compra.setFrete(frete);
+			return compra;
+		}catch(Exception ex) {
+			return null;
+		}
 	}
 
 	@Override

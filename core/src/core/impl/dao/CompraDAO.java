@@ -11,6 +11,7 @@ import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
 import entities.cadastros.CupomCompra;
+import entities.cadastros.TipoCupom;
 import entities.produto.Dimensao;
 import entities.produto.GrupoPrecificacao;
 import entities.produto.Livro;
@@ -74,11 +75,12 @@ public class CompraDAO extends AbstractJdbcDAO {
 			for(int i = 0; i < compras.getCuponCompra().size(); i++) {
 				CupomCompra cupom = compras.getCuponCompra().get(i);
 				pst = connection.prepareStatement("INSERT INTO public.cupons_compra(\r\n" + 
-						"	codigo_cupom, valor, id_venda_vendas)\r\n" + 
-						"	VALUES (?, ?, ?);");
+						"	codigo_cupom, valor, id_venda_vendas,tipo_cupom)\r\n" + 
+						"	VALUES (?, ?, ?,?);");
 				pst.setString(1, cupom.getCodigoCupom());
 				pst.setDouble(2, cupom.getValor());
 				pst.setInt(3, compras.getId());
+				pst.setInt(4, cupom.getTipo().valorTipoCupom);
 				pst.executeUpdate();
 			}
 			connection.commit();
@@ -216,8 +218,15 @@ public class CompraDAO extends AbstractJdbcDAO {
 				List<CupomCompra> cups = new ArrayList<CupomCompra>();
 				while(rsCups.next()) {
 					CupomCompra cpc = new CupomCompra();
+					cpc.setCodigoCupom(rsCups.getString("codigo_cupom"));
+					cpc.setValor(rsCups.getDouble("valor"));
+					cpc.setTipo(TipoCupom.values()[rsCups.getInt("tipo_cupom")]);
+					cups.add(cpc);
 				}
+				c.setCuponCompra(cups);
+				compras.add(c);
 			}
+			return compras;
 		}catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();

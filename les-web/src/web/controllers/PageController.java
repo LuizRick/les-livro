@@ -25,6 +25,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import core.dfs.aplicacao.ListaCupomsCompra;
 import core.dfs.aplicacao.Resultado;
 import core.impl.dao.ClienteDAO;
@@ -163,7 +166,7 @@ public class PageController {
 		return "ecommerce/carrinho";
 	}
 
-	@RequestMapping("/public/finalizar")
+	@RequestMapping(value="/public/finalizar")
 	public String finalizarCompra(@ModelAttribute("carrinho") CarrinhoCompra carrinho ,Model model,
 			HttpServletRequest request) {
 		if (request.getSession().getAttribute("cliente") == null)
@@ -175,7 +178,14 @@ public class PageController {
 			Livro l = (Livro) item.getProduto();
 			total += l.getValor();
 		}
+		ObjectMapper mapper = new  ObjectMapper();
 		model.addAttribute("total", total);
+		try {
+			model.addAttribute("produtos", mapper.writeValueAsString(carrinho.getItens()));
+		}catch(JsonProcessingException ex){
+			ex.printStackTrace();
+			model.addAttribute("produtos", "{}");
+		}
 		return "ecommerce/finalizar";
 	}
 

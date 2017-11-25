@@ -61,6 +61,10 @@ $("#resetar").on('click',function(){
 $(".cardcheck").on('click',function(){
 	var index = $(this).attr("data-index");
 	var elt = $("[data-cardindex='" + index + "']");
+	if($(".input-frete:checked").index() == -1){
+		  alert("Selecione um endereco de entrega");
+		  $(this).prop("checked",false);
+	}
 	if(this.checked){
 		elt.removeAttr("disabled");
 	}else{
@@ -90,11 +94,31 @@ $("#descontos").on('change',function(){
 	  this.total = 0;
 	  this.descontos = 0;
 	  this.cupons = [];
+	  this.cartoes = [];
 	  
 	  this.setProp = function(prop,value){
 		  self[prop] = value;
 		  return value;
 	  }
+	  
+	  $(".input-frete").on('click',function(){
+		 var isChecked = this.checked;
+		 var frete = 0;
+		 
+		 if(isChecked){
+			 var produtos = JSON.parse($("#produtosJSON").val());
+			 var item;
+			 for(var x in produtos){
+				 item = produtos[x];
+				 frete += (item.produto.dimensao.peso * 2) / 10;
+			 }
+		 }
+		 $("#txtFrete").val(frete);
+		 $("#totalPago").val(function(){
+			 var value = parseFloat(this.value);
+			 return (value + frete).toFixed(2);
+		 });
+	  });
 	  
 	  $("[data-cardindex]").on('change',function(){
 		  var value = 0;
@@ -110,11 +134,12 @@ $("#descontos").on('change',function(){
 			  value = 0;
 		  var desconto = Number($("#descontos").val());
 		  var total = self.total - (value  + desconto);
-		  if(total < 0){
+		  if(total > $("#totalPago").val()){
 			  alert("valor + descontos ultrapassa o valor total do pedido");
 			  $(this).focus();
-		  }else{
-			  $('#totalPago').val(total.toFixed(2));
+		  }
+		  else{
+			  $('#totalPago').val($("#totalPago").val() - $("#totalPago").val());
 		  }
 		  $scope.$apply();
 	  });
@@ -154,8 +179,8 @@ $("#descontos").on('change',function(){
 		});
 	  
 	  $("#frmSetCompra").on('submit',function(e){
-		  var obj = {};
-		  obj.formasPagamento = [];
+		 var obj = {};
+		 obj.formasPagamento = [];
 		 var form = document.getElementById('frmSetCompra');
 		 var value = 0;
 		  $("[data-cardindex]:enabled").each(function(i,elt){
@@ -163,6 +188,7 @@ $("#descontos").on('change',function(){
 			 var cartao = {
 					 id : $("[data-index]").eq($(elt).attr("data-cardindex")).val(),
 					 valor:num,
+					 numero:$(elt).parent().parent().parent().find(".numcard").text()
 			 };
 			 if(isNaN(num)){
 				 num = 0;
@@ -170,7 +196,11 @@ $("#descontos").on('change',function(){
 			 }
 			 value += num;
 			 obj.formasPagamento.push(cartao);
+			 $("#cartoesJSON").val(JSON.stringify(obj.formasPagamento));
 		  });
+		  $("#cuponsJSON").val(JSON.stringify(self.cupons));
+		  var jsonEndereco = $(".input-frete:checked").attr("data-json")
+		  $("#enderecoJSON").val(jsonEndereco);
 		  if(isNaN(value))
 			  value = 0;
 		  var desconto = Number($("#descontos").val());
