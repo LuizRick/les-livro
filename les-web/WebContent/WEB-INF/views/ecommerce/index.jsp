@@ -14,6 +14,9 @@
 	<t:template>
 		<jsp:body>
 		<div class="row">
+			<div class="col-lg-12">
+				<h4>LES - Ecommerce de Livros</h4>
+			</div>
 			<c:forEach var="livro" items="${livros}">
 					<form action="additem" method="post">
 						<div class='col-lg-3'>

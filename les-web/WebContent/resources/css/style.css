@@ -27,3 +27,7 @@ footer{
 .text-upper{
 	text-transform: uppercase;
 }
+
+.title-header{
+	border-bottom: 1px dashed #000;
+}

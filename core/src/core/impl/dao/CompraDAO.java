@@ -54,10 +54,12 @@ public class CompraDAO extends AbstractJdbcDAO {
 				Item item = compras.getProdutos().getItens().get(i);
 				pst = connection.prepareStatement("INSERT INTO public.vendas_produtos(\r\n" + 
 						"	qtd, id_venda_vendas, id_livro)\r\n" + 
-						"	VALUES (?, ?, ?);");
+						"	VALUES (?, ?, ?);UPDATE livro SET estoque = estoque - ? where id = ?");
 				pst.setInt(1, item.getQuantidade());
 				pst.setInt(2,compras.getId());
 				pst.setInt(3, item.getProduto().getId());
+				pst.setInt(4, item.getQuantidade());
+				pst.setInt(5, item.getProduto().getId());
 				pst.executeUpdate();
 			}
 			
@@ -86,6 +88,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 			connection.commit();
 		}catch(SQLException ex) {
 			ex.printStackTrace();
+			connection.rollback();
 		}finally {
 			connection.close();
 		}
@@ -105,7 +108,8 @@ public class CompraDAO extends AbstractJdbcDAO {
 			pst = connection.prepareStatement(sql.toString());
 			pst.setInt(1, compra.getStatusCompra().statusCompra);
 			pst.setInt(2, compra.getId());
-			pst.executeQuery();
+			pst.executeUpdate();
+			
 		}catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -125,7 +129,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 				sqlFormPag = new StringBuilder(); //formas de pagamento
 		sql.append("SELECT id_venda, status, endereco, total,id_cliente\r\n" + 
 				"	FROM public.vendas a");
-		sql.append("INNER JOIN cliente b ON a.id_cliente = b.id");
+		sql.append(" INNER JOIN cliente b ON a.id_cliente = b.id");
 		if(entidade != null) {
 			Compra compra = (Compra) entidade;
 			sql.append(" WHERE 1=1");
@@ -133,7 +137,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 				sql.append(" AND a.id_venda = " + compra.getId());
 			}
 			
-			if(!util.isNullOrEmpty(compra.getStatusCompra().statusCompra)) {
+			if(!util.isNullOrEmpty(compra.getStatusCompra())  && !util.isNullOrEmpty(compra.getStatusCompra().statusCompra)) {
 				sql.append(" AND a.status = " + compra.getStatusCompra().statusCompra);
 			}
 			
@@ -151,17 +155,17 @@ public class CompraDAO extends AbstractJdbcDAO {
 				Compra c = new Compra();
 				c.setId(rsCarCompra.getInt("id_venda"));
 				c.setTotal(rsCarCompra.getDouble("total"));
-				c.setStatusCompra(StatusCompra.values()[rsCarCompra.getInt("status")]);
+				c.setStatusCompra(StatusCompra.status((rsCarCompra.getInt("status"))));
 				Frete f = new Frete();
 				f.setEnderecoEntrega(rsCarCompra.getString("endereco"));
 				c.setFrete(f);
 				//seleciona os produtos
 				sqlProdutos.append("SELECT a.id as idvenda, a.qtd, a.id_venda_vendas, a.id_livro,"
-						+ "b.id, .b.autor, b.ano, b.titulo, b.editora, b.edicao, b.isbn, b.npaginas,"
+						+ "b.id,b.autor, b.ano, b.titulo, b.editora, b.edicao, b.isbn, b.npaginas,"
 						+ "b.sinopse, b.status, b.altura, b.largura, b.peso, b.profundidade, b.id_grupo_precificacao, "
-						+ "b.usuario, b.valor, b.estoque\r\n" +
-						"	FROM public.vendas_produtos a;");
-				sqlProdutos.append("INNER JOIN livro b ON a.id_livro = b.id");
+						+ "b.usuario, b.valor, b.estoque\r\n " +
+						"	FROM public.vendas_produtos a");
+				sqlProdutos.append(" INNER JOIN livro b ON a.id_livro = b.id");
 				sqlProdutos.append(" WHERE a.id_venda_vendas = ?");
 				pst = connection.prepareStatement(sqlProdutos.toString());
 				pst.setInt(1, c.getId());
@@ -195,9 +199,9 @@ public class CompraDAO extends AbstractJdbcDAO {
 					cart.getItens().add(item);
 				}
 				c.setProdutos(cart);
-				sqlFormPag.append("SELECT id, valor, id_venda_vendas, numero_cartao\r\n" + 
-						",b.titular,b. numero, b.bandeira, b.codigo_seguranca, b.validade FROM public.vendas_pagamento a \n\r");
-				sqlFormPag.append(" INNER JOIN vendas_pagamento b on b.numero = a.numero_cartao");
+				sqlFormPag.append("SELECT a.id, a.valor, a.id_venda_vendas, a.numero_cartao\r\n" + 
+						",b.titular,b.numero, b.bandeira, b.codigo_seguranca, b.validade FROM public.vendas_pagamento a \n\r");
+				sqlFormPag.append(" INNER JOIN cartao_credito b on b.numero = a.numero_cartao");
 				sqlFormPag.append(" WHERE a.id_venda_vendas = " + c.getId());
 				pst = connection.prepareStatement(sqlFormPag.toString());
 				ResultSet rsCartoes =  pst.executeQuery();

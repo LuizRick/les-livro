@@ -21,17 +21,12 @@ public class CategoriaDAO extends AbstractJdbcDAO {
 	public void salvar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
 		PreparedStatement pst = null;
-		CartaoCredito card = (CartaoCredito) entidade;
+		Categoria cat = (Categoria) entidade;
 		try {
-			pst = connection.prepareStatement("INSERT INTO cartao_credito("
-					+ "titular, numero, bandeira, codigo_seguranca, validade, id_cliente)"
-					+ "VALUES (?, ?, ?, ?, ?, ?);");
-			pst.setString(1, card.getTitular());
-			pst.setString(2, card.getNumero());
-			pst.setString(3, card.getBandeira());
-			pst.setString(4, card.getCodigo());
-			pst.setDate(5, new java.sql.Date(card.getValidade().getTime()));
-			pst.setInt(6, card.getId_cliente());
+			pst = connection.prepareStatement("public.categoria(\r\n" + 
+					"	nome)\r\n" + 
+					"	VALUES (?)");
+			pst.setString(1, cat.getNome());
 			pst.executeUpdate();
 		}catch(SQLException ex) {
 			ex.printStackTrace();
@@ -43,7 +38,18 @@ public class CategoriaDAO extends AbstractJdbcDAO {
 	@Override
 	public void alterar(EntidadeDominio entidade) throws SQLException {
 		// TODO Auto-generated method stub
-
+		PreparedStatement pst = null;
+		Categoria cat = (Categoria) entidade;
+		try {
+			 pst = connection.prepareStatement("UPDATE public.categoria\r\n" + 
+			 		"	SET nome=?" + 
+			 		"	WHERE id = ?");
+			 pst.setString(1, cat.getNome());
+			 pst.setInt(2, cat.getId());
+			 pst.executeUpdate();
+		}catch(SQLException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	@Override

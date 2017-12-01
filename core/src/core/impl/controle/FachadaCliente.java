@@ -11,6 +11,7 @@ import core.dfs.IFachada;
 import core.dfs.IStrategy;
 import core.dfs.aplicacao.Resultado;
 import core.impl.dao.CartaoCreditoDAO;
+import core.impl.dao.CategoriaDAO;
 import core.impl.dao.ClienteDAO;
 import core.impl.dao.CompraDAO;
 import core.impl.negocio.ValidarCamposCartaoCredito;
@@ -21,6 +22,7 @@ import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
+import entities.produto.Categoria;
 import entities.venda.Compra;
 
 public class FachadaCliente implements IFachada {
@@ -38,9 +40,11 @@ public class FachadaCliente implements IFachada {
 		ClienteDAO clienteDAO = new ClienteDAO();
 		CartaoCreditoDAO cartaoCreditoDAO = new CartaoCreditoDAO();
 		CompraDAO compraDAO  = new CompraDAO();
+		CategoriaDAO categoriaDAO = new CategoriaDAO();
 		daos.put(Cliente.class.getName(), clienteDAO);
 		daos.put(CartaoCredito.class.getName(), cartaoCreditoDAO);
 		daos.put(Compra.class.getName(),compraDAO);
+		daos.put(Categoria.class.getName(),categoriaDAO);
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
 		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
 		List<IStrategy> rnsSalvarCompra = new ArrayList<>();

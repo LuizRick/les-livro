@@ -20,4 +20,12 @@ public class CarrinhoCompra {
 	public void setItens(List<Item> itens) {
 		this.itens = itens;
 	}
+	
+	public boolean hasItem(Integer id) {
+		for(Item i : itens) {
+			if(i.getId() == id)
+				return true;
+		}
+		return false;
+	}
 }

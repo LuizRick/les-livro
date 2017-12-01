@@ -36,7 +36,6 @@ public class CompraViewHelper implements IViewHelper {
 			String totalFrete  = request.getParameter("totalFrete");
 			String totalDesc  = request.getParameter("totalDesc");
 			CartaoCredito[] credito = mapper.readValue(jsonCartao,CartaoCredito[].class);
-			CupomCompra[] cupons = mapper.readValue(jsonCupons, CupomCompra[].class);
 			Endereco endereco = mapper.readValue(jsonEndereco, Endereco.class);
 			Compra compra = new Compra();
 			Cliente cliente = (Cliente)request.getSession().getAttribute("cliente");
@@ -47,7 +46,10 @@ public class CompraViewHelper implements IViewHelper {
 			compra.setCliente(cliente);
 			compra.setProdutos(carrinho);
 			compra.setFormasPagamento(Arrays.asList(credito));
-			compra.setCuponCompra(Arrays.asList(cupons));
+			if(jsonCupons != null) {
+				CupomCompra[] cupons = mapper.readValue(jsonCupons, CupomCompra[].class);
+				compra.setCuponCompra(Arrays.asList(cupons));
+			}
 			compra.setTotal(Double.parseDouble(total));
 			compra.setFrete(frete);
 			return compra;
@@ -67,7 +69,7 @@ public class CompraViewHelper implements IViewHelper {
 				resultado.setMsg("Venda feita com sucesso");
 			}
 			request.getSession().setAttribute("resultado",resultado);
-			d = request.getRequestDispatcher("public/compras");
+			d = request.getRequestDispatcher("public/pedidos");
 		}
 		d.forward(request, response);
 	}

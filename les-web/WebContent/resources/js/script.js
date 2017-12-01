@@ -69,7 +69,12 @@ $(".cardcheck").on('click',function(){
 		elt.removeAttr("disabled");
 	}else{
 		elt.attr("disabled","disabled");
+		elt.val("0.0").trigger("change");
 	}
+});
+
+$('[name="quantidade"]').on('change',function(){
+	$(this).closest("form").find(".alterar-qtd").trigger("click");
 });
 
 
@@ -133,13 +138,13 @@ $("#descontos").on('change',function(){
 		  if(isNaN(value))
 			  value = 0;
 		  var desconto = Number($("#descontos").val());
-		  var total = self.total - (value  + desconto);
-		  if(total > $("#totalPago").val()){
+		  var total = self.total + Number($("#txtFrete").val()) - (value  + desconto);
+		  if($("#totalPago").val() > Number($("#total").val()) + Number($("#txtFrete").val())){
 			  alert("valor + descontos ultrapassa o valor total do pedido");
 			  $(this).focus();
 		  }
 		  else{
-			  $('#totalPago').val($("#totalPago").val() - $("#totalPago").val());
+			  $('#totalPago').val((self.total + Number($("#txtFrete").val()) - (value + desconto)).toFixed(2));
 		  }
 		  $scope.$apply();
 	  });
@@ -198,7 +203,6 @@ $("#descontos").on('change',function(){
 			 obj.formasPagamento.push(cartao);
 			 $("#cartoesJSON").val(JSON.stringify(obj.formasPagamento));
 		  });
-		  $("#cuponsJSON").val(JSON.stringify(self.cupons));
 		  var jsonEndereco = $(".input-frete:checked").attr("data-json")
 		  $("#enderecoJSON").val(jsonEndereco);
 		  if(isNaN(value))
@@ -209,6 +213,10 @@ $("#descontos").on('change',function(){
 			  alert("Cartao(es) + descontos nao abate o valor total da compra");
 			  return false;
 		  }
+		  for(var i in self.cupons){
+			  delete self.cupons[i]['$$hashKey'];
+		  }
+		  $("#cuponsJSON").val(JSON.stringify(self.cupons));
 	  });
   }]);
   
@@ -263,7 +271,33 @@ $("#descontos").on('change',function(){
         }
         this.getParameterUrl = getParameterByName;
   }]);
-}();
+  
+  app.controller('ControllerPedido',['$scope','$window', function($scope,$window){
+	  this.compra = $window.compra;
+	  console.dir(this.compra);
+  }]);
+  
+  
+  app.controller('PainelVendasController',['$scope',function($scope){
+	  var self = this;
+	  this.data = {
+			  "meses":["janeiro","fereveiro","marco","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"],
+		  };
+	  
+	  this.categorias = [];
+	  
+	  WebRequestAsyncJson('/les-web/public/categorias').then(function(resp){
+		  var item;
+		  for(var x in resp){
+			  item = resp[x];
+			  self.categorias.push(item);
+		  }
+		  $scope.$apply();
+	  });
+	  
+  }]);
+  
+}(); //fim do app
 
 function WebRequestAsync(urlSend,objData){
 	return new Promise(function(resolve, reject){
@@ -285,6 +319,7 @@ function WebRequestAsync(urlSend,objData){
 
 function WebRequestAsyncJson(urlSend,objData){
 	return new Promise(function(resolve, reject){
+		objData = objData | JSON.stringify({});
 		$.ajax({
 			url:urlSend,
 			async:true,

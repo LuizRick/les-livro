@@ -1,16 +1,18 @@
 package web.controllers;
 
-
+import java.awt.image.IndexColorModel;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.primefaces.json.JSONObject;
 
-import org.json.JSONObject;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +33,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import core.dfs.aplicacao.ListaCupomsCompra;
 import core.dfs.aplicacao.Resultado;
 import core.impl.dao.ClienteDAO;
+import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
@@ -40,6 +43,7 @@ import entities.produto.IProduto;
 import entities.produto.Livro;
 import entities.venda.CarrinhoCompra;
 import entities.venda.Compra;
+import web.controle.web.AprovarCartao;
 import web.controle.web.command.ICommand;
 import web.controle.web.command.impl.AlterarClienteCommand;
 import web.controle.web.command.impl.ConsultarClienteCommand;
@@ -47,6 +51,7 @@ import web.controle.web.command.impl.ConsultarCommand;
 import web.controle.web.command.impl.SalvarClienteCommand;
 import web.controle.web.command.impl.SalvarCommand;
 import entities.venda.Item;
+import entities.venda.StatusCompra;
 import entities.venda.Venda;
 
 @Controller
@@ -70,12 +75,14 @@ public class PageController {
 		return "ok";
 	}
 
-	@RequestMapping("/loginCliente")
+	@RequestMapping("loginCliente")
 	public String loginCliente(Cliente cliente, HttpServletResponse response, HttpServletRequest request)
 			throws Exception {
 		ClienteDAO dao = new ClienteDAO();
-		cliente = (Cliente) dao.consultar(cliente).get(0);
-		if (cliente != null) {
+		List<EntidadeDominio> clientes = dao.consultar(cliente);
+		if (clientes.size() > 0)
+			cliente = (Cliente) dao.consultar(cliente).get(0);
+		if (cliente.getId() != null) {
 			request.getSession().setAttribute("cliente", cliente);
 			return "redirect:/public/verifyCart";
 		}
@@ -109,19 +116,25 @@ public class PageController {
 	public String addcarinho(@ModelAttribute("carrinho") CarrinhoCompra carrinho, Item item, Model model) {
 		Livro livro = new Livro();
 		livro.setId(item.getId());
-		for (Item i : carrinho.getItens()) {
-			if (i.getId() == item.getId())
-				return "redirect:/public/carrinho";
-		}
 		Resultado resultado = commands.get("CONSULTARLIVRO").execute(livro);
 		if (resultado.getEntidades() != null) {
 			livro = (Livro) resultado.getEntidades().get(0);
 			item.setProduto(livro);
 			if (livro.getEstoque() < item.getQuantidade())
 				resultado.setMsg("estoque insuficiente");
-			else {
-				resultado.setMsg("item adicionado com sucesso");
+			else if (!carrinho.hasItem(livro.getId())) {
+				resultado.setMsg("adicionado com sucesso");
 				carrinho.getItens().add(item);
+			} else {
+				for (Item i : carrinho.getItens()) {
+					if (i.getId() == item.getId() && livro.getEstoque() > i.getQuantidade()) {
+						i.setQuantidade(item.getQuantidade() + i.getQuantidade());
+						resultado.setMsg("Produto adicionado com sucesso");
+						return "redirect:/public/carrinho";
+					} else {
+						resultado.setMsg("Estoque Insuficiente");
+					}
+				}
 			}
 		}
 		model.addAttribute("resultado", resultado);
@@ -131,23 +144,31 @@ public class PageController {
 	@RequestMapping(value = "/public/editarItem", method = RequestMethod.POST)
 	public String editraItem(@ModelAttribute("carrinho") CarrinhoCompra carrinho, String operacao, Item item,
 			Model model) {
+		if (operacao.equals("ALTERAR QUANTIDADE"))
+			operacao = "EDITAR";
+		if (operacao.equals("REMOVER"))
+			operacao = "EXCLUIR";
 		Resultado resultado = new Resultado();
+		Livro livro;
 		for (int i = 0; i < carrinho.getItens().size(); i++) {
+			livro = ((Livro) carrinho.getItens().get(i).getProduto());
 			if (operacao.equals("EDITAR") && item.getId() == carrinho.getItens().get(i).getId()) {
-				if (item.getQuantidade() > ((Livro) carrinho.getItens().get(i).getProduto()).getEstoque()) {
-					resultado.setMsg("Erro na edição estoque insuficiente");
+				if (item.getQuantidade() > livro.getEstoque()) {
+					resultado.setMsg("Erro na alteração da quantidade <strong>estoque insuficiente</strong>");
 
 				} else {
-					resultado.setMsg("item editado com sucesso");
+					resultado.setMsg("quantidade alterada com sucesso");
 					item.setProduto(carrinho.getItens().get(i).getProduto());
 					carrinho.getItens().set(i, item);
 				}
 			} else if (operacao.equals("EXCLUIR") && item.getId() == carrinho.getItens().get(i).getId()) {
 				carrinho.getItens().remove(i);
-				resultado.setMsg("item excluido com sucesso");
+				resultado.setMsg("foi excluido com sucesso");
 			}
-			model.addAttribute("resultado", resultado);
+			resultado.setEntidades(new ArrayList<EntidadeDominio>());
+			resultado.getEntidades().add(livro);
 		}
+		model.addAttribute("resultado", resultado);
 		return "redirect:/public/carrinho";
 	}
 
@@ -166,8 +187,8 @@ public class PageController {
 		return "ecommerce/carrinho";
 	}
 
-	@RequestMapping(value="/public/finalizar")
-	public String finalizarCompra(@ModelAttribute("carrinho") CarrinhoCompra carrinho ,Model model,
+	@RequestMapping(value = "/public/finalizar")
+	public String finalizarCompra(@ModelAttribute("carrinho") CarrinhoCompra carrinho, Model model,
 			HttpServletRequest request) {
 		if (request.getSession().getAttribute("cliente") == null)
 			return "redirect:/login.xhtml?msg=faca+login";
@@ -176,13 +197,13 @@ public class PageController {
 		Double total = 0D;
 		for (Item item : carrinho.getItens()) {
 			Livro l = (Livro) item.getProduto();
-			total += l.getValor();
+			total += l.getValor() * item.getQuantidade();
 		}
-		ObjectMapper mapper = new  ObjectMapper();
+		ObjectMapper mapper = new ObjectMapper();
 		model.addAttribute("total", total);
 		try {
 			model.addAttribute("produtos", mapper.writeValueAsString(carrinho.getItens()));
-		}catch(JsonProcessingException ex){
+		} catch (JsonProcessingException ex) {
 			ex.printStackTrace();
 			model.addAttribute("produtos", "{}");
 		}
@@ -194,7 +215,7 @@ public class PageController {
 		RedirectView rw = new RedirectView("/les-web/public/index");
 		return rw;
 	}
-	
+
 	@RequestMapping("/public/verifyCart")
 	public String verifyCart(Model model) {
 		if (!model.containsAttribute("carrinho"))
@@ -220,7 +241,13 @@ public class PageController {
 			if (resultado.getMsg() == null)
 				resultado.setMsg("Salvo com sucesso");
 			model.addAttribute("result", resultado);
+			return "ecommerce/addcartao";
 		}
+		Resultado resultado = new Resultado();
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		cliente.getCartao().add(cartao);
+		request.getSession().setAttribute("cliente", cliente);
+		model.addAttribute("result", resultado);
 		return "ecommerce/addcartao";
 	}
 
@@ -232,28 +259,93 @@ public class PageController {
 	}
 
 	@RequestMapping(value = "/public/adicionarEndereco", method = RequestMethod.POST)
-	public String adicionarEndereco(Endereco endereco, String operacao, Boolean addPerfil, Model model) {
-		if (addPerfil) {
+	public String adicionarEndereco(Endereco endereco, String operacao, Boolean addPerfil, Model model,
+			HttpServletRequest request) {
+		if (addPerfil != null && addPerfil) {
 			ICommand command = commands.get(operacao);
 			Resultado resultado = command.execute(endereco);
 			if (resultado.getMsg() == null)
 				resultado.setMsg("Endereço salvo com sucesso");
 			model.addAttribute("result", resultado);
 		}
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		cliente.getEndereco().add(endereco);
 		return "ecommerce/addendereco";
 	}
-	
-	@RequestMapping(value="/public/verificarCupom")
-	public void verificarCupom(CupomCompra cupom,HttpServletResponse response) throws IOException {
+
+	@RequestMapping(value = "/public/verificarCupom")
+	public void verificarCupom(CupomCompra cupom, HttpServletResponse response) throws IOException {
 		ListaCupomsCompra cupons = new ListaCupomsCompra();
 		cupom = cupons.getCupom(cupom.getCodigoCupom());
-		if(cupom != null) {
-			JSONObject object = new JSONObject(cupom);
+		if (cupom != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+			String json = mapper.writeValueAsString(cupom);
 			response.setStatus(200);
-			response.getWriter().write(object.toString());
-		}else {
+			response.getWriter().write(json);
+		} else {
 			response.setStatus(200);
 			response.getWriter().write("{}");
 		}
+	}
+
+	@RequestMapping(value = "public/pedidos")
+	public String compras(Model model, HttpServletRequest request) {
+		if (request.getSession().getAttribute("cliente") == null)
+			return "redirect:/login.xhtml?msg=faca+login";
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		Compra compra = new Compra();
+		compra.setCliente(cliente);
+		ICommand command = commands.get("CONSULTAR");
+		Resultado result = command.execute(compra);
+		model.addAttribute("pedidos", result.getEntidades());
+		return "ecommerce/pedidos";
+	}
+
+	@RequestMapping(value = "public/sair")
+	public String sairCliente(HttpServletRequest request) {
+		request.getSession().invalidate();
+		return "redirect:/login.xhtml";
+	}
+
+	@RequestMapping(value = "pedidos/listar")
+	public String listarPedidos(Model model, HttpServletRequest request) {
+		ICommand command = commands.get("CONSULTAR");
+		Compra compra = new Compra();
+		Resultado result = command.execute(compra);
+		model.addAttribute("pedidos", result.getEntidades());
+		return "adm/listarPedidos";
+	}
+
+	@RequestMapping(value = "pedidos/setstatus")
+	public void setStatus(String compra, String operacao, HttpServletResponse response) throws Exception {
+		ICommand command = commands.get(operacao);
+		ObjectMapper mapper = new ObjectMapper();
+		Compra entidade = mapper.readValue(compra, Compra.class);
+		entidade.setStatusCompra(AprovarCartao.validarCompra());
+		Resultado result = command.execute(entidade);
+		response.setStatus(200);
+		response.getWriter().write("{}");
+	}
+
+	@RequestMapping(value = "pedidos/visualizarPedidoCliente")
+	public String getPedidoCliente(String compra, Model model, HttpServletRequest request) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		Compra cp = mapper.readValue(compra, Compra.class);
+		model.addAttribute("pedido", cp);
+		return "adm/pedidocliente";
+	}
+
+	@RequestMapping(value = "pedidos/alterarpedido")
+	public String setPedidoStatus(String compra, String operacao, String statusCompra, Model model) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		Compra cp = mapper.readValue(compra, Compra.class);
+		cp.setStatusCompra(StatusCompra.valueOf(statusCompra));
+		ICommand command = commands.get(operacao);
+		Resultado resultado = command.execute(cp);
+		if (resultado.getMsg() == null)
+			resultado.setMsg("Status alterado com sucesso");
+		model.addAttribute("resultado", resultado);
+		return "redirect:/pedidos/listar";
 	}
 }

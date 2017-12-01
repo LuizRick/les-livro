@@ -71,7 +71,6 @@ public class Servlet extends HttpServlet {
 		IViewHelper vh = vhs.get(uri);
 		EntidadeDominio entidade = vh.getEntidade(request);
 		ICommand command = commands.get(operacao);
-		
 		Resultado resultado = command.execute(entidade);
 		vh.setView(resultado, request, response);
 	}

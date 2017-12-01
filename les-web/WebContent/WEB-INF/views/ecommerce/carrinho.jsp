@@ -16,16 +16,17 @@
 		<jsp:body>
 	    	<div class="row">
 	    		<div class="col-lg-12">
+	    		<h3 class="title-header">Carrinho de compras</h3>
 	    			<c:if test="${!empty resultado.msg}">
 	    				<div class="alert alert-info">
-	    					<c:out value="${resultado.msg }"/>
+	    					Livro: <strong>${resultado.entidades[0].titulo}</strong> ${resultado.msg}
 	    				</div>
 	    			</c:if>
 	    			<c:if test="${!empty carrinho.itens }">
 	    				<c:forEach var="item" items="${carrinho.itens }">
 	    				<form action="editarItem" method="post">
 							<div class="row">
-								<div class="col-lg-6 col-sm-12" style="background: #fff">
+								<div class="col-lg-6 col-sm-12" style="background: #fff;margin-bottom: 30px;">
 									<div class="media" style="background:#f4f4f4">
 										<div class="media-left">
 											<a href="javascript:void(0)">
@@ -40,13 +41,13 @@
 											<input type="hidden" name="id" value="${item.id }"/>
 											<div class="form-group">
 												<label>Quantidade:</label>
-												<input type="number" value="${item.quantidade }" name="quantidade" class="form-control"/>
+												<input type="number" value="${item.quantidade }" name="quantidade" class="form-control "/>
 											</div>
 										</div>
 									</div>
-									<div class="btn-group" style="padding:12px">
-										<input class="btn btn-primary" type="submit" name="operacao" value="EDITAR" />
-										<input type="submit" name="operacao" value="EXCLUIR" class="btn btn-danger"/>
+									<div class="" style="padding:12px">
+										<input class="btn btn-primary hidden alterar-qtd" type="submit" name="operacao" value="ALTERAR QUANTIDADE" />
+										<input type="submit" name="operacao" value="REMOVER" class="btn btn-danger"/>
 									</div>
 									<hr/>
 								</div>
@@ -58,7 +59,9 @@
 						</footer>
 	    			</c:if>
 	    			<c:if test="${empty carrinho.itens}">
-	    				<h3>Carrinho vazio!!!</h3>
+	    				<div class='alert alert-danger'>
+	    					<span class='text-primary'><strong>Carrinho vazio!!!</strong></span>
+	    				</div>
 	    			</c:if>
 	    		</div>
 	    	</div>

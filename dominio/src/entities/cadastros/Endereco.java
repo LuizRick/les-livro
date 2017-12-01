@@ -129,7 +129,7 @@ public class Endereco extends EntidadeDominio {
 			return endereco;
 		else
 			endereco = "Rua:" + this.logradouro + "; Numero:" + this.numero + "; Bairro:" + this.bairro + "; Cep:"
-					+ this.cep + "Cidade: " + this.cidade.getNome() + "; Estado: "
+					+ this.cep + "; Cidade: " + this.cidade.getNome() + "; Estado: "
 					+ this.getCidade().getEstado().getNome();
 		return endereco;
 	}
