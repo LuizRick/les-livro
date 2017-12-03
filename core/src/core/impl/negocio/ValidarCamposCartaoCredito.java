@@ -1,6 +1,7 @@
 package core.impl.negocio;
 
 import core.dfs.IStrategy;
+import core.util.CCUtils;
 import core.util.ValidateUtils;
 import dominio.EntidadeDominio;
 import entities.cadastros.CartaoCredito;
@@ -15,6 +16,8 @@ public class ValidarCamposCartaoCredito implements IStrategy {
 		if (utils.isNullOrEmpty(c.getTitular()) || utils.isNullOrEmpty(c.getNumero())
 				|| utils.isNullOrEmpty(c.getBandeira()) || utils.isNullOrEmpty(c.getCodigo()))
 			return "Titular,Numero,Bandeira e codigo são dados obrigatorios";
+		if(c.getNumero().length() < 19 || !CCUtils.validCCNumber(c.getNumero().replaceAll("-","")))
+			return "Numero de cartão invalido";
 		return null;
 	}
 

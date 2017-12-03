@@ -2,6 +2,7 @@ package entities.cadastros;
 
 import entities.usuarios.Usuario;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Cliente extends Usuario {
@@ -22,6 +23,14 @@ public class Cliente extends Usuario {
 	
 	private List<CupomCompra> cupons;
 
+	public Cliente() {
+		// TODO Auto-generated constructor stub
+		endereco = new ArrayList<Endereco>();
+		telefone = new ArrayList<Telefone>();
+		cartao = new ArrayList<Cartao>();
+		cupons = new ArrayList<CupomCompra>();
+	}
+	
 	public String getEmail() {
 		return email;
 	}

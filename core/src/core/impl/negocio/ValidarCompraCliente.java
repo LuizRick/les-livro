@@ -28,6 +28,7 @@ public class ValidarCompraCliente implements IStrategy {
 		if(totalCupom > compra.getTotal() && compra.getTotal() - totalCupom > 25) {
 			return "O cupom de compras ultrapassa muito o valor total da compra use menos cupons";
 		}
+		
 		return null;
 	}
 

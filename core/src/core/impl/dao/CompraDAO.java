@@ -160,6 +160,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 				f.setEnderecoEntrega(rsCarCompra.getString("endereco"));
 				c.setFrete(f);
 				//seleciona os produtos
+				sqlProdutos.setLength(0);
 				sqlProdutos.append("SELECT a.id as idvenda, a.qtd, a.id_venda_vendas, a.id_livro,"
 						+ "b.id,b.autor, b.ano, b.titulo, b.editora, b.edicao, b.isbn, b.npaginas,"
 						+ "b.sinopse, b.status, b.altura, b.largura, b.peso, b.profundidade, b.id_grupo_precificacao, "
@@ -199,6 +200,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 					cart.getItens().add(item);
 				}
 				c.setProdutos(cart);
+				sqlFormPag.setLength(0);
 				sqlFormPag.append("SELECT a.id, a.valor, a.id_venda_vendas, a.numero_cartao\r\n" + 
 						",b.titular,b.numero, b.bandeira, b.codigo_seguranca, b.validade FROM public.vendas_pagamento a \n\r");
 				sqlFormPag.append(" INNER JOIN cartao_credito b on b.numero = a.numero_cartao");

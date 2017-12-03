@@ -15,6 +15,11 @@
 <body>
 	<t:template>
 		<jsp:body>
+		<c:if test="${!empty resultado.msg}">
+	    	<div class="alert alert-info">
+	    		Livro: <strong>${resultado.entidades[0].titulo}</strong> ${resultado.msg}
+	    	</div>
+	    </c:if>
 	    	<div class="row" ng-controller="FinalizacaoCompraController as Compra">
             <div class="col-lg-10 col-lg-offset-1">
                 <form action="setcompra" method="post" id="frmSetCompra">

@@ -31,7 +31,7 @@
                 <div class="collapse navbar-collapse" id="menu">
                     <ul class="nav navbar-nav">
 						<li><a href="/les-web/cliente/FrmConsultarCliente.jsp">Consultar</a>
-						<li><a href="/les-web/cliente/frmCadastrar.jsp">Cadastrar</a>
+						<li><a href="/les-web/cliente/frmCadastrar.jsp">Meu Cadastro</a>
 						<li><a href="/les-web/public/index">Produtos</a></li>
 						<li><a href="/les-web/public/pedidos">Meu pedidos</a>
 						<li><a href="/les-web/public/sair">Sair</a>

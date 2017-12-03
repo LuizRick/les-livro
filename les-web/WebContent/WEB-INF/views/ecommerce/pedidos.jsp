@@ -54,13 +54,17 @@
     </div>
     <script>
     var pedidos = ${ju:toJson(pedidos) };
+    var hasRequest = false;
     setInterval(function () {
         for (var x in pedidos) {
             var pedido = pedidos[x];
-            if (pedido.statusCompra == "Processamento") {
+            if (pedido.statusCompra == "Processamento" && !hasRequest) {
                 pedido.statusCompra = "Aprovado";
+                
             	WebRequestAsync('/les-web/pedidos/setstatus',{"compra":JSON.stringify(pedido),"operacao":"ALTERAR"}).then(function(){
-						location.reload();
+					hasRequest = false;
+					location.reload();
+						
                 	});
             }
         }

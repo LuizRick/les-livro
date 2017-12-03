@@ -67,6 +67,8 @@ $(".cardcheck").on('click',function(){
 	}
 	if(this.checked){
 		elt.removeAttr("disabled");
+		elt.val("");
+		elt.focus();
 	}else{
 		elt.attr("disabled","disabled");
 		elt.val("0.0").trigger("change");
@@ -220,11 +222,13 @@ $("#descontos").on('change',function(){
 	  });
   }]);
   
+  
   app.controller('FormClienteController',['$scope', function($scope){
         this.tab = "tab1";
         this.telefones = [1];
         this.cartoes = [1];
         this.enderecos = [1];
+        $scope.cliente = window.cliente;
         this.setTab = (tab) => {
         	this.tab = tab;
         }
@@ -271,6 +275,7 @@ $("#descontos").on('change',function(){
         }
         this.getParameterUrl = getParameterByName;
   }]);
+  
   
   app.controller('ControllerPedido',['$scope','$window', function($scope,$window){
 	  this.compra = $window.compra;

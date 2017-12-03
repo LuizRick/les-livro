@@ -9,7 +9,17 @@ public class ValidarEnderecoObrigatorioCliente implements IStrategy{
 
 	
 	public String processar(dominio.EntidadeDominio entidade) {
-		Cliente cli = (Cliente) entidade;
+		Cliente cli;
+		if(entidade instanceof Endereco) {
+			cli = new Cliente();
+			cli.getEndereco().add((Endereco)entidade);
+		}
+		else if(entidade instanceof Cliente) {
+			 cli = (Cliente) entidade;
+		}else {
+			cli = new Cliente();
+		}
+		
 		ValidateUtils v = new ValidateUtils();
 		for(int i = 0;i < cli.getEndereco().size();i++){
 			Endereco e = cli.getEndereco().get(i);

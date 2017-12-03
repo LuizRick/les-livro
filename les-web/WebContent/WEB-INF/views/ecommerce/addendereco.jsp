@@ -79,6 +79,7 @@
                     		</label>
                     	</div>
                     </div>
+                    <input type="hidden" name="id_cliente" value="${cliente.id}"/>
                     <input type="submit" name="operacao" value="SALVAR" class="btn btn-success"/>
                 </form>
 			</div>

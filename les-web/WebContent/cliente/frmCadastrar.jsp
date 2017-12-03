@@ -7,6 +7,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
          pageEncoding="UTF-8"%>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags"%>
+<%@taglib prefix="ju" uri="/WEB-INF/tld/json.tld" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" ng-app="app"
       xmlns:c="http://java.sun.com/jsp/jstl/core">
@@ -20,6 +21,9 @@
     Cliente cliente;
     PessoaFisica pessoa;
     CartaoCredito cartao;
+    if(request.getSession().getAttribute("cliente") != null){
+    	request.setAttribute("cliente", request.getSession().getAttribute("cliente"));
+    }
     if (resultado != null && request.getParameter("id") != null) {
         cliente = (Cliente) resultado.getEntidades().get(0);
         pessoa = (PessoaFisica) cliente.getPessoa();
@@ -32,6 +36,9 @@
 %>
 <t:template>
     <jsp:body>
+    	<script>
+			window.cliente = ${ju:toJson(cliente)};
+    	</script>
         <form action="/les-web/cliente/SalvarCliente" method="post" id="frmCadastraCliente" novalidate
               ng-controller="FormClienteController as ctrl">
             <div class="row">
@@ -60,12 +67,12 @@
                     <div class="form-group">
                         <label>CPF:</label>
                         <input type="text" name="txtCpf" required="true" class="form-control" data-mask="999.999.999-99"
-                               value="${empty pessoa ? '' : pessoa.getCpf()}"/>
+                               value="${empty cliente ? '' : cliente.pessoa.cpf}"/>
                     </div>
                     <div class="form-group">
                         <label>E-Mail:</label>
                         <input type="text" name="txtEmail" required="true" class="form-control"
-                               value="${empty cliente? '': cliente.getEmail() }"/>
+                               value="${empty cliente ? '': cliente.email }"/>
                     </div>
                     <div class="form-group">
                         <label>Senha:</label>
@@ -75,18 +82,20 @@
                     <div class="form-group">
                         <label>Data de nascimento</label>
                         <input type="text" name="txtNascimento" data-mask="99/99/9999" class="form-control"
-                               value="${empty pessoa ? '': ConvertDate.converteDateString(pessoa.getNascimento()) }"/>
+                               value="${empty cliente ? '': ConvertDate.converteDateString(cliente.pessoa.getNascimento()) }"/>
 
                     </div>
                     <div class="form-group">
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="radSexo" value="M" /> MASCULINO
+                                <input type="radio" name="radSexo" value="M" 
+                                	ng-checked="cliente.pessoa.genero == 'M'"/> MASCULINO
                             </label>
                         </div>
                         <div class="checkbox">
                             <label>
-                                <input type="radio" name="radSexo" value="F"/> FEMININO
+                                <input type="radio" name="radSexo" value="F"
+                                ng-checked="cliente.pessoa.genero == 'F'"/> FEMININO
                             </label>
                         </div>
                     </div>
@@ -105,11 +114,6 @@
                                 <option value="2">Celular</option>
                                 <option value="3">Comercial</option>
                             </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-lg-6">
-
                         </div>
                     </div>
                 </div>
@@ -170,6 +174,16 @@
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-6">
+                        	<div class="panel panel-default">
+                        		<div class="panel-heading">
+                        			<h4>Menu Endereços</h4>
+                        		</div>
+                        		<div class="panel-body">
+                        			<a href="/les-web/public/adicionarEndereco">Novo Endereço(Logado)</a>
+                        		</div>
+                        	</div>
                         </div>
                     </div>
                 </div>

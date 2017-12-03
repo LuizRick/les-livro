@@ -20,6 +20,8 @@ import entities.venda.Compra;
 import entities.venda.Frete;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.media.sound.RealTimeSequencerProvider;
+
 import webapp.controle.web.vh.IViewHelper;
 
 public class CompraViewHelper implements IViewHelper {
@@ -64,14 +66,26 @@ public class CompraViewHelper implements IViewHelper {
 		// TODO Auto-generated method stub 
 		String operacao = request.getParameter("operacao");
 		RequestDispatcher d = null;
-		if(resultado.getMsg() == null){
-			if(operacao.equals("SALVAR")){
-				resultado.setMsg("Venda feita com sucesso");
+		if(resultado != null) {
+			if(resultado.getMsg() == null){
+				if(operacao.equals("SALVAR")){
+					resultado.setMsg("Venda feita com sucesso");
+					request.getSession().setAttribute("resultado",resultado);
+					response.sendRedirect("/les-web/public/pedidos");
+				}
+				if(operacao.equals("CONSULTAR")) {
+					d = request.getRequestDispatcher("/les-web/public/pedidos");
+				}
+			}else {
+				if(operacao.equals("SALVAR")) {
+					request.getSession().setAttribute("resultado",resultado);
+					d = request.getRequestDispatcher("/les-web/public/finalizar");
+				}
 			}
-			request.getSession().setAttribute("resultado",resultado);
-			d = request.getRequestDispatcher("public/pedidos");
+			
 		}
-		d.forward(request, response);
+		if(d != null)
+			d.forward(request, response);
 	}
 
 }

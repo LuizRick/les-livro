@@ -18,7 +18,7 @@
 				<h4>LES - Ecommerce de Livros</h4>
 			</div>
 			<c:forEach var="livro" items="${livros}">
-					<form action="additem" method="post">
+					<form action="additem" method="post" id="${livro.id}">
 						<div class='col-lg-3'>
 							<div class='thumbnail'>
 								<img src="img/img.jpg" alt="livro" />
