@@ -1,7 +1,7 @@
 package entities.venda;
 
 public enum StatusCompra {
-	Processamento(1),Troca(2),Aprovado(3),Reprovado(4),Transporte(5),Entregue(6);
+	Processamento(1),Troca(2),Aprovado(3),Reprovado(4),Transporte(5),Entregue(6),Emtroca(7),Trocado(8);
 	
 	public int statusCompra;
 	
@@ -24,7 +24,15 @@ public enum StatusCompra {
 			return StatusCompra.Transporte;
 		case 6:
 			return StatusCompra.Entregue;
+		case 7:
+			return StatusCompra.Emtroca;
+		case 8:
+			return StatusCompra.Trocado;
 		}
 		return StatusCompra.Troca;
+	}
+	
+	public int getStatus() {
+		return statusCompra;
 	}
 }

@@ -105,7 +105,7 @@
                         <div class="form-group">
                             <label>Telefone</label>
                             <input type="text" data-mask="(99)-9999-9999" class="form-control input-phone" name="telefone"
-                                   value="${empty cliente ? '': cliente.getTelefone().get(0).getNumero()}"/>
+                                   value="${empty cliente && cliente.getTelefone().size() > 0 ? '': cliente.getTelefone().get(0).getNumero()}"/>
 
                         </div>
                         <div class="form-group">

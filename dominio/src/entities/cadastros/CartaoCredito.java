@@ -2,12 +2,15 @@ package entities.cadastros;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class CartaoCredito extends Cartao {
 
 	private String bandeira;
 
 	private String codigo;
-
+	
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
 	private Date validade;
 	
 	private Boolean addPerfil;

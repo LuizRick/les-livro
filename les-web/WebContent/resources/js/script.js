@@ -89,6 +89,28 @@ $("#descontos").on('change',function(){
 	var total = Number($("#totalPago").val());
 });
 
+$(".add-troca").on('click',function(){
+	var texto = $(this).text();
+	if(texto == "remover")
+		$(this).text("add");
+	else
+		$(this).text("remover");
+});
+
+$("#trocarTudo").on('click',function(){
+	var form = document.createElement("form");
+	form.setAttribute('method',"post");
+	form.setAttribute("action","pedido/trocar");
+	var input = document.createElement("input");
+	input.setAttribute("type","hidden");
+	input.setAttribute("name","compra")
+	input.setAttribute("value",window.compra);
+	form.appendChild(input);
+	form.submit();
+	$("body").append(form);
+});
+
+
 +function(){
   var app = angular.module("app",[]);
   if(getParameterByName("msg") != "0"){
@@ -192,10 +214,12 @@ $("#descontos").on('change',function(){
 		 var value = 0;
 		  $("[data-cardindex]:enabled").each(function(i,elt){
 			 var num = parseFloat(elt.value);
+			 var cardObj = JSON.parse($(elt).attr("data-json"));
 			 var cartao = {
 					 id : $("[data-index]").eq($(elt).attr("data-cardindex")).val(),
 					 valor:num,
-					 numero:$(elt).parent().parent().parent().find(".numcard").text()
+					 numero:$(elt).parent().parent().parent().find(".numcard").text(),
+					 validade:cardObj.validade
 			 };
 			 if(isNaN(num)){
 				 num = 0;

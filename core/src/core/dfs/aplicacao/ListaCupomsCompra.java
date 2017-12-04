@@ -25,7 +25,7 @@ public class ListaCupomsCompra {
 			if(c.getCodigoCupom() == "050" || c.getCodigoCupom() == "075")
 				c.setValidade(ConvertDate.converteStringDate("04/12/2017"));
 			else
-				c.setValidade(ConvertDate.converteStringDate("05/12/2017"));
+				c.setValidade(ConvertDate.converteStringDate("20/12/2017"));
 		}
 	}
 	

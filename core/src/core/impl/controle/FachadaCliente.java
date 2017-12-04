@@ -15,6 +15,7 @@ import core.impl.dao.CategoriaDAO;
 import core.impl.dao.ClienteDAO;
 import core.impl.dao.CompraDAO;
 import core.impl.dao.EnderecoDAO;
+import core.impl.dao.TrocasDAO;
 import core.impl.negocio.ValidarCamposCartaoCredito;
 import core.impl.negocio.ValidarCamposObrigatoriosCliente;
 import core.impl.negocio.ValidarCompraCliente;
@@ -28,6 +29,7 @@ import entities.cadastros.Cliente;
 import entities.cadastros.Endereco;
 import entities.produto.Categoria;
 import entities.venda.Compra;
+import entities.venda.Trocas;
 
 public class FachadaCliente implements IFachada {
 
@@ -46,36 +48,43 @@ public class FachadaCliente implements IFachada {
 		CompraDAO compraDAO  = new CompraDAO();
 		CategoriaDAO categoriaDAO = new CategoriaDAO();
 		EnderecoDAO enderecoDAO = new EnderecoDAO();
+		TrocasDAO trocasDAO = new TrocasDAO();
+		
 		daos.put(Cliente.class.getName(), clienteDAO);
 		daos.put(CartaoCredito.class.getName(), cartaoCreditoDAO);
 		daos.put(Compra.class.getName(),compraDAO);
 		daos.put(Categoria.class.getName(),categoriaDAO);
 		daos.put(Endereco.class.getName(), enderecoDAO);
+		daos.put(Trocas.class.getName(), trocasDAO);
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
 		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
 		List<IStrategy> rnsSalvarCompra = new ArrayList<>();
 		List<IStrategy> rnsAlterarCompra = new ArrayList<>();
 		List<IStrategy> rnsSalvarEndereco = new ArrayList<>();
-		
+		List<IStrategy> rnsSalvarTroca = new ArrayList<>();
 		rnsSalvarCartao.add(new ValidarCamposCartaoCredito());
 		rnsSalvarCliente.add(new ValidarCamposObrigatoriosCliente());
-		rnsAlterarCompra.add(new ValidarFormasPagamento());
+		//rnsAlterarCompra.add(new ValidarFormasPagamento());
 		rnsSalvarCompra.add(new ValidarCompraCliente());
 		rnsSalvarEndereco.add(new ValidarEnderecoObrigatorioCliente());
 		rnsSalvarCompra.add(new ValidarEstoqueLivro());
+		rnsSalvarCompra.add(new ValidarFormasPagamento());
 		Map<String, List<IStrategy>> rnsCliente = new HashMap<String, List<IStrategy>>();
 		Map<String,List<IStrategy>> rnsCartaoCredito = new HashMap<>();
 		Map<String, List<IStrategy>> rnsCompraCliente = new HashMap<>();
 		Map<String, List<IStrategy>> rnsEnderecoCliente = new HashMap<>();
+		Map<String, List<IStrategy>> rnsTrocasCliente = new  HashMap<>();
 		rnsCliente.put("SALVAR", rnsSalvarCliente);
 		rnsCartaoCredito.put("SALVAR", rnsSalvarCartao);
 		rnsCompraCliente.put("SALVAR", rnsSalvarCompra);
 		rnsCompraCliente.put("ALTERAR", rnsAlterarCompra);
 		rnsEnderecoCliente.put("SALVAR", rnsSalvarEndereco);
+		rnsTrocasCliente.put("SALVAR", rnsSalvarTroca);
 		rns.put(Cliente.class.getName(), rnsCliente);
 		rns.put(CartaoCredito.class.getName(), rnsCartaoCredito);
 		rns.put(Compra.class.getName(), rnsCompraCliente);
 		rns.put(Endereco.class.getName(), rnsEnderecoCliente);
+		rns.put(Trocas.class.getName(), rnsTrocasCliente);
 	}
 	
 	

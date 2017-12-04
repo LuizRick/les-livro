@@ -64,6 +64,9 @@
 										<option value="Aprovado">Aprovado</option>
 										<option value="Transporte">Transporte</option>
 										<option value="Entregue">Entregue</option>
+										<option value="Reprovado">Reprovado</option>
+										<option value="Troca">Troca</option>
+										<option value="Processamento">Processamento</option>
 									</select>
 								</div>
 								<input type="hidden" name="compra" value='${ju:toJson(pedido)}'/>

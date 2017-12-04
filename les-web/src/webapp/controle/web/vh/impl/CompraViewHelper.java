@@ -79,7 +79,7 @@ public class CompraViewHelper implements IViewHelper {
 			}else {
 				if(operacao.equals("SALVAR")) {
 					request.getSession().setAttribute("resultado",resultado);
-					d = request.getRequestDispatcher("/les-web/public/finalizar");
+					d = request.getRequestDispatcher("/public/finalizar");
 				}
 			}
 			

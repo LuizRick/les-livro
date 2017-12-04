@@ -38,8 +38,10 @@
                                     <td>${pedido.total}</td>
                                     <td>${pedido.frete.enderecoEntrega}</td>
                                     <td>
-                                        <a href="/les-web/pedidos/reqtroca"
-                                        class="btn btn-primary">Trocar itens</a>
+                                        <c:if test="${pedido.statusCompra.status == 6}">
+                                        	<a href="/les-web/pedidos/reqtroca?id=${pedido.id}"
+                                        		class="btn btn-primary">Trocar itens</a>
+                                        </c:if>
                                     </td>
                                 </tr>
                             </c:forEach>

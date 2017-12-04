@@ -17,7 +17,10 @@
             <div class="col-lg-4">
             	<c:if test="${!empty result && !result.msg.equals('')}">
             		<div class="alert alert-info">
-            			${result.msg }
+            			${result.msg }<br />
+            			<a href="http://localhost:8080/les-web/public/finalizar" class="btn btn-success">
+            				Finalizar Compra
+            			</a>
             		</div>
             	</c:if>
                 <form action="adicionarCartao" method="post">

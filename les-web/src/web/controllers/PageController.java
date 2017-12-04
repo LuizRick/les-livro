@@ -29,6 +29,7 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.corba.se.spi.orbutil.fsm.Guard.Result;
 
 import core.dfs.aplicacao.ListaCupomsCompra;
 import core.dfs.aplicacao.Resultado;
@@ -52,6 +53,7 @@ import web.controle.web.command.impl.SalvarClienteCommand;
 import web.controle.web.command.impl.SalvarCommand;
 import entities.venda.Item;
 import entities.venda.StatusCompra;
+import entities.venda.Trocas;
 import entities.venda.Venda;
 
 @Controller
@@ -312,6 +314,8 @@ public class PageController {
 	public String listarPedidos(Model model, HttpServletRequest request) {
 		ICommand command = commands.get("CONSULTAR");
 		Compra compra = new Compra();
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		compra.setCliente(cliente);
 		Resultado result = command.execute(compra);
 		model.addAttribute("pedidos", result.getEntidades());
 		return "adm/listarPedidos";
@@ -347,5 +351,52 @@ public class PageController {
 			resultado.setMsg("Status alterado com sucesso");
 		model.addAttribute("resultado", resultado);
 		return "redirect:/pedidos/listar";
+	}
+	
+	@RequestMapping(value="pedidos/reqtroca",method=RequestMethod.GET)
+	public String requisaoTroca(Integer id,Model model,HttpServletRequest request) {
+		if(id != null) {
+			Compra compra = new Compra();
+			compra.setId(id);
+			Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+			compra.setCliente(cliente);
+			ICommand command = commands.get("CONSULTAR");
+			Resultado resultado = command.execute(compra);
+			if(resultado.getMsg() == null) {
+				model.addAttribute("compra", resultado.getEntidades().get(0));
+			}
+			model.addAttribute("resultado",resultado);
+		}else {
+			return "redirect:/les-web/public/pedidos";		
+		}
+		
+		return "ecommerce/reqTroca";
+	}
+	
+	@RequestMapping(value="pedido/trocar")
+	public String fazerTroca(String compra,Model model,HttpServletRequest request) {
+		if(compra != null) {
+			try {
+				ObjectMapper mapper = new ObjectMapper();
+				Compra c =  mapper.readValue(compra, Compra.class);
+				Trocas troca = new Trocas();
+				troca.setCompra(c);
+				troca.setStatus(StatusCompra.Emtroca);
+				ICommand command = commands.get("SALVAR");
+				Resultado resultado = command.execute(troca);
+				model.addAttribute("resultado", resultado);
+				return "ecommerce/trocas";
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			}
+		}
+		return "redirect:pedidos/solicitacoes";
+	}
+	
+	@RequestMapping(value="pedidos/solicitacoes")
+	public String solicitacoesTroca() {
+		
+		return "ecommerce/trocas";
 	}
 }

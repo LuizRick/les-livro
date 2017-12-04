@@ -120,6 +120,42 @@ public class TesteVenda extends Test{
 	}
 	
 	
+	public void testFinalizarCompra2(String operacao) {
+		try {
+			fazerLogin();
+			driver.navigate().to("http://localhost:8080/les-web/public/index");
+			LivroDAO dao = new LivroDAO();
+			@SuppressWarnings("unchecked")
+			List<Livro> lst = (List<Livro>)(List<?>) dao.consultar(null);
+			int livro = lst.get(new Random().nextInt(lst.size())).getId();
+			WebElement elt = driver.findElement(By.id(livro+""));
+			elt.submit();
+			driver.navigate().to("http://localhost:8080/les-web/public/finalizar");
+			driver.manage().timeouts().pageLoadTimeout(10,TimeUnit.SECONDS);
+			elt = driver.findElement(By.name("frete.endereco.id"));
+			elt.click();
+			elt = driver.findElement(By.name("formasPagamento.id"));
+			elt.click();
+			elt = driver.findElement(By.name("formasPagamento.valor"));
+			for(Livro l : lst) {
+				if(l.getId() == livro)
+				{
+					elt.clear();
+					elt.sendKeys("" + l.getValor());
+				}
+			}
+			elt = driver.findElement(By.name("codigoCupom"));
+			elt.sendKeys("025");
+			elt = driver.findElement(By.name("btnAddCupom"));
+			elt.click();
+			elt = driver.findElement(By.name("operacao"));
+			elt.click();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
 	private void fazerLogin() throws Exception {
 		openDriver();
 		String window = driver.getWindowHandle();

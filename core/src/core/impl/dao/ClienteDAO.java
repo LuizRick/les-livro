@@ -22,6 +22,7 @@ import entities.cadastros.Estado;
 import entities.cadastros.Pais;
 import entities.cadastros.PessoaFisica;
 import entities.cadastros.Telefone;
+import entities.cadastros.TipoTelefone;
 import entities.produto.Livro;
 
 public class ClienteDAO extends AbstractJdbcDAO {
@@ -287,9 +288,24 @@ public class ClienteDAO extends AbstractJdbcDAO {
 					e.setCidade(cidade);
 					enderecos.add(e);
 				}
+				pst = connection.prepareStatement("SELECT id, codigo_area, numero, tipo, id_cliente\r\n" + 
+						"	FROM public.telefone WHERE id_cliente = ?;");
+				List<Telefone> listaTelefones = new ArrayList<>();
+				rs.close();
+				pst.setInt(1, c.getId());
+				rs = pst.executeQuery();
+				while(rs.next()) {
+					Telefone tel = new Telefone();
+					tel.setArea(rs.getString("codigo_area"));
+					tel.setNumero(rs.getString("numero"));
+					tel.setId(rs.getInt("id"));
+					tel.setTipo(TipoTelefone.setValue(rs.getInt("tipo")));
+					listaTelefones.add(tel);
+				}
 				rsEnd.close();
 				c.setCartao(cartoes);
 				c.setEndereco(enderecos);
+				c.setTelefone(listaTelefones);
 				clientes.add(c);
 			}
 			return clientes;

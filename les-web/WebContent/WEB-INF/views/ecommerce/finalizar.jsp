@@ -16,7 +16,10 @@
 	<t:template>
 		<jsp:body>
 		<c:if test="${!empty resultado.msg}">
-	    	<div class="alert alert-info">
+	    	<div class="alert alert-info alert-dismissible">
+	    		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    			<span aria-hidden="true">&times;</span>
+	    		</button>
 	    		Livro: <strong>${resultado.entidades[0].titulo}</strong> ${resultado.msg}
 	    	</div>
 	    </c:if>
@@ -74,7 +77,7 @@
                                             <div class="form-group">
                                                 <label>valor</label>
                                                 <input type="text" name="formasPagamento.valor" class="form-control" disabled="disabled" value="0.0"
-                                                	data-cardindex="${status.index }"/>
+                                                	data-cardindex="${status.index }" data-json='${ju:toJson(cartao) }'/>
                                             </div>
                                         </div>
                                         <hr/>

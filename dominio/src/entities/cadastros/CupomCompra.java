@@ -27,6 +27,7 @@ public class CupomCompra extends EntidadeDominio implements IFormaPagamento {
 	
 	public CupomCompra(String codigoCupom,String nome,Double valor,TipoCupom tipo) {
 		this(codigoCupom, nome, valor, true);
+		this.tipo = tipo;
 	}
 	
 	public String getCodigoCupom() {

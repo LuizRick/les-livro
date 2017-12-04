@@ -18,7 +18,10 @@
 	    		<div class="col-lg-12">
 	    		<h3 class="title-header">Carrinho de compras</h3>
 	    			<c:if test="${!empty resultado.msg}">
-	    				<div class="alert alert-info">
+	    				<div class="alert alert-info alert-dismissible">
+	    					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    						<span aria-hidden="true">&times;</span>
+	    					</button>
 	    					Livro: <strong>${resultado.entidades[0].titulo}</strong> ${resultado.msg}
 	    				</div>
 	    			</c:if>

@@ -72,12 +72,16 @@
 									<form action="visualizarPedidoCliente" method="post">
 										<tr>
 											<td>${pedido.id }</td>
-											<td>${pedido.statusCompra }</td>
+											<td>${pedido.statusCompra.status }</td>
 											<td>${pedido.total}</td>
 											<td>${pedido.frete.enderecoEntrega}</td>
-											<td><input type="hidden" name="compra"
-												value='${ju:toJson(pedido)}' /> <input type="submit"
-												value="VISUALIZAR" class="btn btn-primary " /></td>
+											<td>
+												<c:if test="${pedido.statusCompra.status != 3 }">
+													<input type="hidden" name="compra"
+														value='${ju:toJson(pedido)}' /> <input type="submit"
+														value="VISUALIZAR" class="btn btn-primary " />
+												</c:if>
+											</td>
 										</tr>
 									</form>
 								</c:forEach>
