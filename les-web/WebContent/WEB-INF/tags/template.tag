@@ -30,11 +30,19 @@
                 </div>
                 <div class="collapse navbar-collapse" id="menu">
                     <ul class="nav navbar-nav">
-						<li><a href="/les-web/cliente/FrmConsultarCliente.jsp">Consultar</a>
-						<li><a href="/les-web/cliente/frmCadastrar.jsp">Meu Cadastro</a>
+						<li><a href="/les-web/cliente/FrmConsultarCliente.jsp">Consultar</a></li>
+						<li><a href="/les-web/cliente/frmCadastrar.jsp">Meu Cadastro</a></li>
 						<li><a href="/les-web/public/index">Produtos</a></li>
-						<li><a href="/les-web/public/pedidos">Meu pedidos</a>
-						<li><a href="/les-web/public/sair">Sair</a>
+						<li class="dropdown">
+							<a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
+								Minha Conta <span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+								<li><a href="/les-web/public/pedidos">Meus pedidos</a></li>
+								<li><a href="/les-web/private/cupons?operacao=CONSULTAR">Meus Cupons</a>
+							</ul>
+						</li>
+						<li><a href="/les-web/public/sair">Sair</a></li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                     	<li>

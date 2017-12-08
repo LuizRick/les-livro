@@ -16,6 +16,14 @@
 <link rel="stylesheet" href="/les-web/resources/css/style.css" />
 </head>
 <body>
+	<c:if test="${!empty resultado.msg}">
+	    <div class="alert alert-info alert-dismissible">
+	    	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		<span aria-hidden="true">&times;</span>
+	    	</button>
+	    	<strong>${resultado.msg}</strong>
+	    </div>
+	</c:if>
 	<div class="container-fluid"
 		ng-controller="PainelVendasController as Painel">
 		<div class="row">
@@ -59,6 +67,8 @@
 								</div>
 							</form>
 						</fieldset>
+						<fieldset>
+						<legend>Pedidos Compra</legend>
 						<table class="table table-hover">
 							<thead>
 								<th>Id</th>
@@ -72,11 +82,11 @@
 									<form action="visualizarPedidoCliente" method="post">
 										<tr>
 											<td>${pedido.id }</td>
-											<td>${pedido.statusCompra.status }</td>
+											<td>${pedido.statusCompra}</td>
 											<td>${pedido.total}</td>
 											<td>${pedido.frete.enderecoEntrega}</td>
 											<td>
-												<c:if test="${pedido.statusCompra.status != 3 }">
+												<c:if test="true">
 													<input type="hidden" name="compra"
 														value='${ju:toJson(pedido)}' /> <input type="submit"
 														value="VISUALIZAR" class="btn btn-primary " />
@@ -87,6 +97,25 @@
 								</c:forEach>
 							</tbody>
 						</table>
+						</fieldset>
+						<fieldset>
+							<legend>Pedidos Troca</legend>
+							<table class="table table-hover">
+								<thead>
+									<tr>
+										<th>Id</th>
+										<th>Ações</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach var="troca" items="${trocas}">
+										<tr>
+											<td>${troca.id}</td>
+										</tr>
+									</c:forEach>
+								</tbody>
+							</table>
+						</fieldset>
 					</div>
 					<div class="panel-footer"></div>
 				</div>

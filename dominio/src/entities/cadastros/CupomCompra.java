@@ -12,7 +12,40 @@ public class CupomCompra extends EntidadeDominio implements IFormaPagamento {
 	private Boolean valido;
 	private TipoCupom tipo;
 	private Date validade;
+	private Integer idVenda; 
+	private Cliente cliente;
+	private Integer idCupom;
 	
+	public Integer getIdCupom() {
+		return idCupom;
+	}
+
+
+	public void setIdCupom(Integer idCupom) {
+		this.idCupom = idCupom;
+	}
+
+
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
+
+	public Integer getIdVenda() {
+		return idVenda;
+	}
+
+
+	public void setIdVenda(Integer idVenda) {
+		this.idVenda = idVenda;
+	}
+
+
 	public CupomCompra() {
 		// TODO Auto-generated constructor stub
 	}

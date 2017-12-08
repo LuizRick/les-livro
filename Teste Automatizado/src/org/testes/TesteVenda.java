@@ -105,20 +105,22 @@ public class TesteVenda extends Test{
 			elt = driver.findElement(By.name("formasPagamento.id"));
 			elt.click();
 			elt = driver.findElement(By.name("formasPagamento.valor"));
+			
+			Double total  = 0.0D;
 			for(Livro l : lst) {
 				if(l.getId() == livro)
 				{
-					elt.clear();
-					elt.sendKeys("" + l.getValor());
+					total += l.getValor();
 				}
 			}
+			Double vlrFrete = Double.parseDouble(driver.findElement(By.name("totalFrete")).getAttribute("value"));
+			elt.sendKeys(total + vlrFrete + "");
 			elt = driver.findElement(By.name("operacao"));
 			elt.click();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
 	
 	public void testFinalizarCompra2(String operacao) {
 		try {

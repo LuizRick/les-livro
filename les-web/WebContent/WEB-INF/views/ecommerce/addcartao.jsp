@@ -26,33 +26,38 @@
                 <form action="adicionarCartao" method="post">
                     <div class="form-group">
                         <label>Titular</label>
-                        <input type="text" name="titular" class="form-control" />
+                        <input type="text" name="titular" class="form-control" 
+                        value="${cartao.titular }" />
                     </div>
                     <div class="form-group">
                         <label>Numero</label>
                         <input type="text" name="numero" class="form-control" 
-                        	data-mask="9999-9999-9999-9999" />
+                        	data-mask="9999-9999-9999-9999" value="${cartao.numero }" />
                     </div>
                     <div class="form-group">
                         <label>Baindeira</label>
-                        <input type="text" name="bandeira" class="form-control" />
+                        <input type="text" name="bandeira" class="form-control" 
+                        	value="${cartao.bandeira }" />
                     </div>
                     <div class="form-group">
                         <label>Codigo de segurança</label>
-                        <input type="text" name="codigo" class="form-control" maxlength="3" />
+                        <input type="text" name="codigo" class="form-control" maxlength="3" 
+                        value="${cartao.codigo }"/>
                     </div>
                     <div class="form-group">
                         <label>Validade</label>
-                        <input type="text" name="validade" class="form-control" data-mask="99/99/9999" required/>
+                        <input type="text" name="validade" class="form-control" data-mask="99/99/9999" required
+                        	value="${cartao.validade }"/>
                     </div>
                     <div class="form-group">
                     	<div class="checkbox">
                     		<label>
-                    			<input type="checkbox" name="addPerfil" /> Adicionar ao Perfil
+                    			<input type="checkbox" name="addPerfil" value="${cartao.addPerfil}"/> Adicionar ao Perfil
                     		</label>
                     	</div>
                     </div>
                     <input type="hidden" name="id_cliente" value="${cliente.id }"/>
+                    <input type="hidden" name="id" value="" />
                     <input type="submit" name="operacao" value="SALVAR" class="btn btn-success"/>
                     <input type="reset"  value="LIMPAR" class="btn btn-danger"/>
                 </form>

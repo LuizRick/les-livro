@@ -5,6 +5,15 @@ import dominio.EntidadeDominio;
 public class Trocas extends EntidadeDominio{
 	private Compra compra;
 	private StatusCompra status;
+	private TipoTroca tipo;
+
+	public TipoTroca getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoTroca tipo) {
+		this.tipo = tipo;
+	}
 
 	public StatusCompra getStatus() {
 		return status;

@@ -1,15 +1,18 @@
 package core.impl.dao;
 
+import java.sql.Statement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import core.util.ValidateUtils;
 import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
+import entities.cadastros.Cliente;
 import entities.cadastros.CupomCompra;
 import entities.cadastros.TipoCupom;
 import entities.produto.Dimensao;
@@ -20,6 +23,7 @@ import entities.venda.Compra;
 import entities.venda.Frete;
 import entities.venda.Item;
 import entities.venda.StatusCompra;
+import entities.venda.TipoTroca;
 
 public class CompraDAO extends AbstractJdbcDAO {
 	
@@ -105,13 +109,56 @@ public class CompraDAO extends AbstractJdbcDAO {
 				"	SET status= ?" + 
 				"	WHERE id_venda = ?;");
 		try {
+			
+			connection.setAutoCommit(false);
+			
+			if(compra.getStatusCompra() == StatusCompra.Emtroca) {
+				sql.append("INSERT INTO public.pedidos_troca(\r\n" + 
+						"	status, id_venda,flg_tipotroca)\r\n" + 
+						"	VALUES (?,?,?);");
+			}
 			pst = connection.prepareStatement(sql.toString());
 			pst.setInt(1, compra.getStatusCompra().statusCompra);
 			pst.setInt(2, compra.getId());
+			if(compra.getStatusCompra() == StatusCompra.Emtroca) {
+				pst.setInt(3, StatusCompra.Emtroca.statusCompra);
+				pst.setInt(4, compra.getId());
+				pst.setInt(5, TipoTroca.Completa.valor);
+			}
 			pst.executeUpdate();
-			
+			Double totalCupom = 0.0D;
+			if(compra.getStatusCompra() == StatusCompra.Trocado) {
+				for(int i = 0;i < compra.getProdutos().getItens().size();i++) {
+					Item item = compra.getProdutos().getItens().get(i);
+					Livro livro = (Livro) item.getProduto();
+					pst = connection.prepareStatement("UPDATE livro SET estoque=estoque + ? WHERE id = ?");
+					pst.setInt(1, item.getQuantidade());
+					pst.setInt(2, livro.getId());
+					pst.executeUpdate();
+					totalCupom += livro.getValor();
+				}
+				pst = connection.prepareStatement("INSERT INTO public.cupons_compra(\r\n" + 
+						"	codigo_cupom, valor, id_venda_vendas, tipo_cupom)\r\n" + 
+						"	VALUES (?, ?, ?, ?);",Statement.RETURN_GENERATED_KEYS);
+				pst.setString(1, "TROCA-" + UUID.randomUUID().toString().split("-")[0]);
+				pst.setDouble(2, totalCupom);
+				pst.setInt(3, compra.getId());
+				pst.setInt(4, TipoCupom.Troca.valorTipoCupom);
+				pst.executeUpdate();
+				ResultSet rs = pst.getGeneratedKeys();
+				if(rs.next()) {
+					pst = connection.prepareStatement("INSERT INTO public.cupom_cliente(\r\n" + 
+							"	id_cliente, id_cupom)\r\n" + 
+							"	VALUES (?, ?);");
+					pst.setInt(1, compra.getCliente().getId());
+					pst.setInt(2, rs.getInt("id"));
+					pst.executeUpdate();
+				}
+			}
+			connection.commit();
 		}catch (SQLException e) {
 			e.printStackTrace();
+			connection.rollback();
 		}finally {
 			connection.close();
 		}
@@ -159,6 +206,9 @@ public class CompraDAO extends AbstractJdbcDAO {
 				Frete f = new Frete();
 				f.setEnderecoEntrega(rsCarCompra.getString("endereco"));
 				c.setFrete(f);
+				Cliente cliente = new Cliente();
+				cliente.setId(rsCarCompra.getInt("id_cliente"));
+				c.setCliente(cliente);
 				//seleciona os produtos
 				sqlProdutos.setLength(0);
 				sqlProdutos.append("SELECT a.id as idvenda, a.qtd, a.id_venda_vendas, a.id_livro,"
@@ -226,7 +276,7 @@ public class CompraDAO extends AbstractJdbcDAO {
 					CupomCompra cpc = new CupomCompra();
 					cpc.setCodigoCupom(rsCups.getString("codigo_cupom"));
 					cpc.setValor(rsCups.getDouble("valor"));
-					cpc.setTipo(TipoCupom.values()[rsCups.getInt("tipo_cupom")]);
+					cpc.setTipo(TipoCupom.getTipoCupom(rsCups.getInt("tipo_cupom")));
 					cups.add(cpc);
 				}
 				c.setCuponCompra(cups);

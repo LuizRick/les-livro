@@ -100,14 +100,19 @@ $(".add-troca").on('click',function(){
 $("#trocarTudo").on('click',function(){
 	var form = document.createElement("form");
 	form.setAttribute('method',"post");
-	form.setAttribute("action","pedido/trocar");
+	form.setAttribute("action","/les-web/pedido/trocar");
 	var input = document.createElement("input");
 	input.setAttribute("type","hidden");
 	input.setAttribute("name","compra")
-	input.setAttribute("value",window.compra);
+	input.setAttribute("value",JSON.stringify(window.compra));
 	form.appendChild(input);
-	form.submit();
+	var inputT = document.createElement("input");
+	inputT.setAttribute("type","hidden");
+	inputT.setAttribute("name","operacao");
+	inputT.setAttribute("value","ALTERAR");
+	form.appendChild(inputT);
 	$("body").append(form);
+	form.submit();
 });
 
 

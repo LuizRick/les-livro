@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -42,6 +43,7 @@ import entities.cadastros.CupomCompra;
 import entities.cadastros.Endereco;
 import entities.produto.IProduto;
 import entities.produto.Livro;
+import entities.usuarios.Notificacao;
 import entities.venda.CarrinhoCompra;
 import entities.venda.Compra;
 import web.controle.web.AprovarCartao;
@@ -249,7 +251,9 @@ public class PageController {
 		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
 		cliente.getCartao().add(cartao);
 		request.getSession().setAttribute("cliente", cliente);
+		resultado.setMsg("salvo com sucesso");
 		model.addAttribute("result", resultado);
+		model.addAttribute("cartao", cartao);
 		return "ecommerce/addcartao";
 	}
 
@@ -314,10 +318,15 @@ public class PageController {
 	public String listarPedidos(Model model, HttpServletRequest request) {
 		ICommand command = commands.get("CONSULTAR");
 		Compra compra = new Compra();
-		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
-		compra.setCliente(cliente);
+		//Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		//compra.setCliente(cliente);
 		Resultado result = command.execute(compra);
+		result.setMsg("");
 		model.addAttribute("pedidos", result.getEntidades());
+		Trocas troca = new Trocas();
+		result = command.execute(troca);
+		model.addAttribute("trocas", result.getEntidades());
+		model.addAttribute("resultado", result);
 		return "adm/listarPedidos";
 	}
 
@@ -331,12 +340,14 @@ public class PageController {
 		response.setStatus(200);
 		response.getWriter().write("{}");
 	}
-
-	@RequestMapping(value = "pedidos/visualizarPedidoCliente")
+	
+	@RequestMapping(value="pedidos/visualizarPedidoCliente")
 	public String getPedidoCliente(String compra, Model model, HttpServletRequest request) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		Compra cp = mapper.readValue(compra, Compra.class);
 		model.addAttribute("pedido", cp);
+		if(cp.getStatusCompra() == StatusCompra.Emtroca)
+			return "adm/admtrocas";
 		return "adm/pedidocliente";
 	}
 
@@ -373,17 +384,42 @@ public class PageController {
 		return "ecommerce/reqTroca";
 	}
 	
+	@RequestMapping(value="pedidos/visualizarPedido")
+	public String vizualizarPedidoCliente(Integer id,Model model,HttpServletRequest request) {
+		if(id != null) {
+			Compra compra = new Compra();
+			compra.setId(id);
+			Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+			compra.setCliente(cliente);
+			ICommand command = commands.get("CONSULTAR");
+			Resultado resultado = command.execute(compra);
+			if(resultado.getMsg() == null) {
+				compra = (Compra) resultado.getEntidades().get(0);
+				compra.setCliente(cliente);
+				model.addAttribute("compra",compra);
+			}
+			model.addAttribute("resultado",resultado);
+		}
+		return "ecommerce/visualizarPedido";
+	}
+	
 	@RequestMapping(value="pedido/trocar")
-	public String fazerTroca(String compra,Model model,HttpServletRequest request) {
+	public String fazerTroca(String compra,String operacao,Model model,HttpServletRequest request) {
 		if(compra != null) {
 			try {
 				ObjectMapper mapper = new ObjectMapper();
 				Compra c =  mapper.readValue(compra, Compra.class);
+				c.setStatusCompra(StatusCompra.Emtroca);
 				Trocas troca = new Trocas();
 				troca.setCompra(c);
 				troca.setStatus(StatusCompra.Emtroca);
-				ICommand command = commands.get("SALVAR");
-				Resultado resultado = command.execute(troca);
+				ICommand command = commands.get(operacao);
+				Resultado resultado = null;
+				command = commands.get(operacao);
+				if(operacao.equals("ALTERAR"))//alterar compra para troca
+					resultado = command.execute(c);
+				if(operacao.equals("SALVAR")) //gerar pedido de troca
+					resultado = command.execute(troca);
 				model.addAttribute("resultado", resultado);
 				return "ecommerce/trocas";
 			}catch (Exception e) {
@@ -398,5 +434,53 @@ public class PageController {
 	public String solicitacoesTroca() {
 		
 		return "ecommerce/trocas";
+	}
+	
+	@RequestMapping(value="trocas/trocarpedido")
+	public String fazerTroca(String pedido,String[] produtos,StatusCompra status,RedirectAttributes redAttr) throws JsonProcessingException,IOException {
+		if(pedido != null && produtos != null) {
+			ObjectMapper mapper = new ObjectMapper();
+			Trocas troca = new Trocas();
+			Compra compra = mapper.readValue(pedido, Compra.class);
+			compra.setStatusCompra(status);
+			List<Item> itens = new ArrayList<Item>();
+			//setar os produtos que irão retornar ao estoque
+			for(String produto : produtos) {
+				for(int i = 0; i < compra.getProdutos().getItens().size(); i++) {
+					if(Integer.parseInt(produto) == compra.getProdutos().getItens().get(i).getId())
+						itens.add(compra.getProdutos().getItens().get(i));
+				}
+			}
+			compra.getProdutos().setItens(itens);
+			troca.setCompra(compra);
+			ICommand command = commands.get("ALTERAR");
+			Resultado result;
+			if(status == StatusCompra.Trocado)
+				 result = command.execute(compra);
+			else
+				 result = command.execute(troca);
+			if(result.getMsg() == null) {
+				result.setMsg("Pedido Alterado com sucesso");
+			}
+			redAttr.addFlashAttribute("resultado", result);
+		}
+		return "redirect:/pedidos/listar";
+	}
+	
+	@RequestMapping(value="private/cupons")
+	public String listarCuponsTroca(String operacao,Model model) throws Exception {
+		ICommand command = commands.get(operacao);
+		Resultado result  = new Resultado();
+		CupomCompra cupons = new CupomCompra();
+		result = command.execute(cupons);
+		model.addAttribute("resultado", result);
+		return "ecommerce/cuponsTroca";
+	}
+	
+	@RequestMapping(value="cupons/notificacoes")
+	public void processarNotificacao(String operacao,String notificacao,HttpServletResponse response) {
+		
+		response.setStatus(200);
+		
 	}
 }

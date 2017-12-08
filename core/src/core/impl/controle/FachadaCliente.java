@@ -14,7 +14,9 @@ import core.impl.dao.CartaoCreditoDAO;
 import core.impl.dao.CategoriaDAO;
 import core.impl.dao.ClienteDAO;
 import core.impl.dao.CompraDAO;
+import core.impl.dao.CupomDAO;
 import core.impl.dao.EnderecoDAO;
+import core.impl.dao.NotificacoesDAO;
 import core.impl.dao.TrocasDAO;
 import core.impl.negocio.ValidarCamposCartaoCredito;
 import core.impl.negocio.ValidarCamposObrigatoriosCliente;
@@ -26,8 +28,10 @@ import dominio.EntidadeDominio;
 import entities.cadastros.Cartao;
 import entities.cadastros.CartaoCredito;
 import entities.cadastros.Cliente;
+import entities.cadastros.CupomCompra;
 import entities.cadastros.Endereco;
 import entities.produto.Categoria;
+import entities.usuarios.Notificacao;
 import entities.venda.Compra;
 import entities.venda.Trocas;
 
@@ -49,13 +53,16 @@ public class FachadaCliente implements IFachada {
 		CategoriaDAO categoriaDAO = new CategoriaDAO();
 		EnderecoDAO enderecoDAO = new EnderecoDAO();
 		TrocasDAO trocasDAO = new TrocasDAO();
-		
+		CupomDAO cupomDAO = new CupomDAO();
+		NotificacoesDAO notificacoesDAO = new NotificacoesDAO();
 		daos.put(Cliente.class.getName(), clienteDAO);
 		daos.put(CartaoCredito.class.getName(), cartaoCreditoDAO);
 		daos.put(Compra.class.getName(),compraDAO);
 		daos.put(Categoria.class.getName(),categoriaDAO);
 		daos.put(Endereco.class.getName(), enderecoDAO);
 		daos.put(Trocas.class.getName(), trocasDAO);
+		daos.put(Notificacao.class.getName(),notificacoesDAO);
+		daos.put(CupomCompra.class.getName(), cupomDAO);
 		List<IStrategy> rnsSalvarCliente = new ArrayList<IStrategy>();
 		List<IStrategy> rnsSalvarCartao = new ArrayList<>();
 		List<IStrategy> rnsSalvarCompra = new ArrayList<>();
