@@ -31,7 +31,12 @@
 						
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								<h5>Detalhamento</h5>
+								<h4>
+									<a href="javascript:history.back()" class="btn btn-default">
+										<span class="glyphicon glyphicon-arrow-left"></span>
+									</a>
+									Detalhamento
+								</h4>
 							</div>
 							<div class="panel-body">
 								<div class="detalhamento-header">
@@ -70,7 +75,10 @@
 								</table>
 							</div>
 							<div class="panel-footer">
-								
+								<c:if test="${compra.statusCompra.status == 6}">
+                                	<a href="/les-web/pedidos/reqtroca?id=${compra.id}"
+                                        	class="btn btn-primary">Trocar itens</a>
+                                </c:if>
 							</div>
 						</div>
 					</c:if>

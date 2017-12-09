@@ -5,7 +5,7 @@ import java.util.Date;
 public class EntidadeDominio implements IEntidade {
 
 	private Integer id;
-
+	
 	private Date dtCadastro;
 
 	public Integer getId() {

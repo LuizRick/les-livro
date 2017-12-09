@@ -14,7 +14,7 @@
 </head>
 <body>
 <script>
-	window.compra = ${ju:toJson(compra)};
+	
 </script>
 	<t:template>
 		<jsp:body>
@@ -22,19 +22,47 @@
 			<div class="row">
 				<div class="col-lg-12">
 					<div class="page-header">
-						<h4>Cupons de compra <strong>${compra.id}</strong></h4>
+						<h4>Cupons de compra</h4>
 					</div>
 				</div>
 				<div class="col-lg-7">
 					
-					<c:if test="${!empty compra}">
+					<c:if test="${!empty resultado}">
 						
 						<div class="panel panel-default">
 							<div class="panel-heading">
 								
 							</div>
 							<div class="panel-body">
-								
+								<table class="table table-hover">
+									<thead>
+										<tr>
+											<th>Codigo</th>
+											<th>Valor</th>
+											<th>Data Criação</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										<c:forEach var="cupom" items="${resultado.entidades }">
+											<tr>
+												<td>${cupom.codigoCupom }</td>
+												<td>${cupom.valor }</td>
+												<td>${cupom.dtCadastro }</td>
+												<td>
+													<c:choose>
+														<c:when test="${cupom.valido }">
+															Cupom Não Utilizado
+														</c:when>
+														<c:when test="${!cupom.valido }">
+															Já utilizado
+														</c:when>
+													</c:choose>
+												</td>
+											</tr>
+										</c:forEach>
+									</tbody>
+								</table>
 							</div>
 							<div class="panel-footer">
 								

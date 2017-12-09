@@ -11,6 +11,8 @@ import java.util.Map;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.catalina.manager.util.SessionUtils;
 import org.primefaces.json.JSONObject;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -478,9 +480,15 @@ public class PageController {
 	}
 	
 	@RequestMapping(value="cupons/notificacoes")
-	public void processarNotificacao(String operacao,String notificacao,HttpServletResponse response) {
-		
+	public void processarNotificacao(String operacao,String notificacao,HttpServletResponse response,
+			HttpServletRequest request) throws Exception {
+		ICommand command = commands.get(operacao);
+		ObjectMapper mapper = new ObjectMapper();
+		Notificacao entidade = mapper.readValue(notificacao, Notificacao.class);
+		Cliente cliente = (Cliente) request.getSession().getAttribute("cliente");
+		entidade.setIdCliente(cliente.getId());
+		Resultado result = command.execute(entidade);
 		response.setStatus(200);
-		
+		response.getWriter().write(mapper.writeValueAsString(result));
 	}
 }

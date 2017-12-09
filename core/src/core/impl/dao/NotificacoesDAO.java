@@ -48,10 +48,10 @@ public class NotificacoesDAO extends AbstractJdbcDAO {
 		openConnection();
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT id, mensagem, pageSetStatus, flg_lido, id_cliente\r\n" + 
+			sql.append("SELECT id, mensagem, 'pageSetStatus' status, flg_lido, id_cliente\r\n" + 
 					" FROM public.notificacoes");
 			if(entidade != null) {
-				sql.append("WHERE 1=1");
+				sql.append(" WHERE 1=1 ");
 				Notificacao not = (Notificacao) entidade;
 				if(!utils.isNullOrEmpty(not.getLido()))
 					sql.append(" AND flg_lido = " + not.getLido());
@@ -69,7 +69,7 @@ public class NotificacoesDAO extends AbstractJdbcDAO {
 				n.setId(rs.getInt("id"));
 				n.setMensagem(rs.getString("mensagem"));
 				n.setIdCliente(rs.getInt("id_cliente"));
-				n.setPage(rs.getString("pageSetStatus"));
+				n.setPage(rs.getString("status"));
 				n.setLido(rs.getBoolean("flg_lido"));
 				lst.add(n);
 			}

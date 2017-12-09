@@ -1,4 +1,28 @@
 
+$(function(){
+	var obj = {"operacao":"CONSULTAR", "notificacao":JSON.stringify({})};
+	WebRequestAsync('/les-web/cupons/notificacoes',obj).then(function(resp){
+		for(var x in resp.entidades){
+			var item = resp.entidades[x];
+			if(!item.lido){
+				var opt = {
+						body:item.mensagem + "(Clique na notificacao para confirmar)",
+						icon:"/les-web/public/img/icone-cupom.png"
+					};
+					var n = new Notification("Cupon Gerado",opt);
+					n.onclick = function(e){
+						item.lido = true;
+						obj =  {"operacao":"ALTERAR", "notificacao":JSON.stringify(item)};
+						WebRequestAsync('/les-web/cupons/notificacoes',obj).then(function(resp){
+							n.close();
+							window.location = "http://localhost:8080/les-web/private/cupons?operacao=CONSULTAR";
+						});
+					}
+			}
+		}
+	});
+});
+
 $("#txtEdicao,#txtTitulo").on('focus',function() {
 	$(window).scrollTop(0);
 });
@@ -331,7 +355,7 @@ $("#trocarTudo").on('click',function(){
 	  
   }]);
   
-}(); //fim do app
+}(); // fim do app
 
 function WebRequestAsync(urlSend,objData){
 	return new Promise(function(resolve, reject){
@@ -353,7 +377,7 @@ function WebRequestAsync(urlSend,objData){
 
 function WebRequestAsyncJson(urlSend,objData){
 	return new Promise(function(resolve, reject){
-		objData = objData | JSON.stringify({});
+		objData = objData || JSON.stringify({});
 		$.ajax({
 			url:urlSend,
 			async:true,

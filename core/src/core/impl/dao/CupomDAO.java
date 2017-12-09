@@ -69,10 +69,10 @@ public class CupomDAO extends AbstractJdbcDAO {
 		openConnection();
 		try {
 			StringBuilder sql = new StringBuilder();
-			sql.append("SELECT a.id idcupom, a.codigo_cupom, a.valor, a.id_venda_vendas, a.tipo_cupom\r\n" + 
-					", b.id idcupomcli, b.id_cliente, b.id_cupom, b.valido" + 
+			sql.append("SELECT a.id idcupom, a.codigo_cupom, a.valor, a.id_venda_vendas, a.tipo_cupom,a.created\r\n" + 
+					", b.id idcupomcli, b.id_cliente, b.id_cupom, b.valido " + 
 					"	FROM public.cupons_compra a");
-			sql.append("LEFT JOIN cupom_cliente b ON b.id_cupom = a.id");
+			sql.append(" LEFT JOIN cupom_cliente b ON b.id_cupom = a.id");
 			if(entidade != null) {
 				sql.append(" WHERE 1=1 ");
 				CupomCompra cupom = (CupomCompra) entidade;
@@ -94,6 +94,7 @@ public class CupomDAO extends AbstractJdbcDAO {
 				c.setTipo(TipoCupom.getTipoCupom(rs.getShort("tipo_cupom")));
 				c.setValido(rs.getBoolean("valido"));
 				c.setIdCupom(rs.getInt("idcupomcli"));
+				c.setDtCadastro(rs.getDate("created"));
 				Cliente cliente = new Cliente();
 				cliente.setId(rs.getInt("id_cliente"));
 				c.setCliente(cliente);
